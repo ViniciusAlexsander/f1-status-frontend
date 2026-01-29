@@ -2,10 +2,22 @@ import { useQuery } from "@apollo/client/react";
 import { GET_MEETINGS } from "../api/queries/getMeetings";
 import "./App.css";
 
-function App() {
-  const { data, loading, error } = useQuery(GET_MEETINGS);
+interface Meeting {
+  meetingName: string;
+  countryName: string;
+  dateStart: string;
+  dateEnd: string;
+}
 
-  if (loading) return <p>Loading...</p>;
+interface MeetingsData {
+  currentYearNextMeeting: Meeting;
+  currentYearMeetings: Meeting[];
+}
+
+function App() {
+  const { data, loading, error } = useQuery<MeetingsData>(GET_MEETINGS);
+
+  if (loading || !data) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
