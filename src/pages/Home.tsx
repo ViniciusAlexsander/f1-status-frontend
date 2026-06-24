@@ -11,8 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { useFormula1Events } from "../api/useFormula1Events";
-import type { Formula1Event } from "../api/types";
+import { useListRaces } from "../api/useListRaces";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("pt-BR", {
@@ -22,19 +21,8 @@ function formatDate(date: string) {
   });
 }
 
-function getNextEvent(events: Formula1Event[]) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return events.find(
-    (event) =>
-      event.status === "scheduled" && new Date(event.dateStart) >= today,
-  );
-}
-
 export default function Home() {
-  const { events, loading, error } = useFormula1Events();
-  const nextEvent = getNextEvent(events);
+  const { raceList, loading, error } = useListRaces();
 
   if (loading) {
     return (
@@ -63,30 +51,34 @@ export default function Home() {
       <Stack gap="8">
         <Stack gap="2">
           <Heading size="3xl">Formula 1</Heading>
-          <Text color="fg.muted">Calendario de meetings da temporada.</Text>
+          <Text color="fg.muted">Calendario de corridas da temporada.</Text>
         </Stack>
 
         <Card.Root>
           <Card.Body>
             <Stack gap="4">
               <Stack direction="row" justify="space-between" gap="4">
-                <Heading size="lg">Proximo meeting</Heading>
-                {nextEvent ? <Badge>{nextEvent.status}</Badge> : null}
+                <Heading size="lg">Proxima race week</Heading>
+                {raceList?.nextRace ? (
+                  <Badge>{raceList?.nextRace.status}</Badge>
+                ) : null}
               </Stack>
 
-              {nextEvent ? (
+              {raceList?.nextRace ? (
                 <Stack gap="3">
-                  <Heading size="2xl">{nextEvent.name}</Heading>
+                  <Heading size="2xl">{raceList?.nextRace.name}</Heading>
                   <Text>
-                    {nextEvent.location.country.name} - {nextEvent.location.city}
+                    {raceList?.nextRace.location.country.name} -{" "}
+                    {raceList?.nextRace.location.city}
                   </Text>
                   <Text color="fg.muted">
-                    {nextEvent.location.name} | {formatDate(nextEvent.dateStart)}{" "}
-                    a {formatDate(nextEvent.dateEnd)}
+                    {raceList?.nextRace.location.name} |{" "}
+                    {formatDate(raceList?.nextRace.dateStart)} a{" "}
+                    {formatDate(raceList?.nextRace.dateEnd)}
                   </Text>
                   <Box>
                     <Button asChild>
-                      <RouterLink to={`/meetings/${nextEvent.id}`}>
+                      <RouterLink to={`/meetings/${raceList?.nextRace.id}`}>
                         Ver detalhes
                       </RouterLink>
                     </Button>
@@ -100,27 +92,37 @@ export default function Home() {
         </Card.Root>
 
         <Stack gap="4">
-          <Heading size="xl">Calendario</Heading>
-          <Stack gap="3">
-            {events.slice(0, 6).map((event) => (
-              <Card.Root key={event.id}>
+          <Heading size="xl">Calendario completo</Heading>
+          <Stack gap="4">
+            {raceList?.races.map((race) => (
+              <Card.Root key={race.id}>
                 <Card.Body>
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     justify="space-between"
-                    gap="3"
+                    gap="4"
                   >
-                    <Stack gap="1">
-                      <Heading size="md">{event.name}</Heading>
-                      <Text color="fg.muted">
-                        {event.location.country.name} - {event.location.name}
+                    <Stack gap="2">
+                      <Stack direction="row" align="center" gap="3" wrap="wrap">
+                        <Heading size="lg">{race.name}</Heading>
+                        <Badge>{race.status}</Badge>
+                      </Stack>
+                      <Text>
+                        {race.location.country.name} - {race.location.city}
+                      </Text>
+                      <Text color="fg.muted">{race.location.name}</Text>
+                      <Text color="fg.muted" fontSize="sm">
+                        {formatDate(race.dateStart)} a{" "}
+                        {formatDate(race.dateEnd)}
                       </Text>
                     </Stack>
-                    <Stack align={{ base: "flex-start", md: "flex-end" }} gap="1">
-                      <Badge>{event.status}</Badge>
-                      <Text color="fg.muted" fontSize="sm">
-                        {formatDate(event.dateStart)} a {formatDate(event.dateEnd)}
-                      </Text>
+
+                    <Stack align={{ base: "flex-start", md: "flex-end" }}>
+                      <Button asChild variant="outline">
+                        <RouterLink to={`/meetings/${race.id}`}>
+                          Ver detalhes
+                        </RouterLink>
+                      </Button>
                     </Stack>
                   </Stack>
                 </Card.Body>

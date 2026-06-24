@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { useFormula1Events } from "../api/useFormula1Events";
+import { useListRaces } from "../api/useListRaces";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("pt-BR", {
@@ -32,8 +32,10 @@ function formatDateTime(date: string) {
 
 export default function MeetingDetails() {
   const { id } = useParams();
-  const { events, loading, error } = useFormula1Events();
-  const event = events.find((formula1Event) => formula1Event.id === id);
+  const { raceList, loading, error } = useListRaces();
+
+  const event =
+    raceList && raceList.races.find((formula1Event) => formula1Event.id === id);
 
   if (loading) {
     return (
@@ -121,7 +123,10 @@ export default function MeetingDetails() {
                           <Badge variant="outline">{session.status}</Badge>
                         </Stack>
                       </Stack>
-                      <Stack align={{ base: "flex-start", md: "flex-end" }} gap="1">
+                      <Stack
+                        align={{ base: "flex-start", md: "flex-end" }}
+                        gap="1"
+                      >
                         <Text color="fg.muted" fontSize="sm">
                           Inicio: {formatDateTime(session.startTime)}
                         </Text>

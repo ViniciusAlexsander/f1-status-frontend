@@ -13,14 +13,14 @@ export interface Country {
   threeCode: string | null;
 }
 
-export interface EventLocation {
+export interface Location {
   id: string;
   name: string;
   city: string;
   country: Country;
 }
 
-export interface EventSchedule {
+export interface Schedule {
   id: string;
   name: string;
   type: ScheduleType;
@@ -29,15 +29,15 @@ export interface EventSchedule {
   status: EventStatus;
 }
 
-export interface Formula1Event {
+export interface RaceWeek {
   id: string;
   name: string;
   dateStart: string;
   dateEnd: string;
   status: EventStatus;
-  location: EventLocation;
+  location: Location;
   sportId: string;
-  schedule: EventSchedule[];
+  schedule: Schedule[];
 }
 
 export interface PaginationMeta {
@@ -47,7 +47,12 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
-export interface EventsResponse {
-  data: Formula1Event[];
+export interface RaceListData {
+  races: RaceWeek[];
+  nextRace: RaceWeek;
+}
+
+export interface RaceListResponse {
+  data: RaceListData;
   meta: PaginationMeta;
 }
