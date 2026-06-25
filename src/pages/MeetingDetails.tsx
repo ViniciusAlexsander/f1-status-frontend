@@ -68,7 +68,7 @@ export default function MeetingDetails() {
             <Alert.Title>Meeting nao encontrado.</Alert.Title>
           </Alert.Root>
           <Button asChild alignSelf="flex-start" variant="outline">
-            <RouterLink to="/meetings">Voltar para meetings</RouterLink>
+            <RouterLink to="/">Voltar para meetings</RouterLink>
           </Button>
         </Stack>
       </Container>
@@ -79,7 +79,7 @@ export default function MeetingDetails() {
     <Container maxW="5xl" py="10">
       <Stack gap="6">
         <Button asChild alignSelf="flex-start" variant="outline">
-          <RouterLink to="/meetings">Voltar</RouterLink>
+          <RouterLink to="/">Voltar</RouterLink>
         </Button>
 
         <Card.Root>
