@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { useListRaces } from "../api/useListRaces";
+import { useListRaces } from "../hooks/useListRaces";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("pt-BR", {
@@ -22,11 +22,11 @@ function formatDate(date: string) {
 }
 
 export default function Home() {
-  const { raceList, loading, error } = useListRaces();
+  const { data, isLoading, isError, error } = useListRaces();
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Container maxW="5xl" py="10">
+      <Container maxW="5xl">
         <Stack align="center" gap="4">
           <Spinner size="lg" />
           <Text>Carregando calendario da Formula 1...</Text>
@@ -35,19 +35,19 @@ export default function Home() {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
-      <Container maxW="5xl" py="10">
+      <Container maxW="5xl">
         <Alert.Root status="error">
           <Alert.Indicator />
-          <Alert.Title>{error}</Alert.Title>
+          <Alert.Title>{error.message}</Alert.Title>
         </Alert.Root>
       </Container>
     );
   }
 
   return (
-    <Container maxW="5xl" py="10">
+    <Container maxW="5xl">
       <Stack gap="8">
         <Stack gap="2">
           <Heading size="3xl">Formula 1</Heading>
@@ -59,26 +59,24 @@ export default function Home() {
             <Stack gap="4">
               <Stack direction="row" justify="space-between" gap="4">
                 <Heading size="lg">Proxima race week</Heading>
-                {raceList?.nextRace ? (
-                  <Badge>{raceList?.nextRace.status}</Badge>
-                ) : null}
+                {data?.nextRace ? <Badge>{data?.nextRace.status}</Badge> : null}
               </Stack>
 
-              {raceList?.nextRace ? (
+              {data?.nextRace ? (
                 <Stack gap="3">
-                  <Heading size="2xl">{raceList?.nextRace.name}</Heading>
+                  <Heading size="2xl">{data?.nextRace.name}</Heading>
                   <Text>
-                    {raceList?.nextRace.location.country.name} -{" "}
-                    {raceList?.nextRace.location.city}
+                    {data?.nextRace.location.country.name} -{" "}
+                    {data?.nextRace.location.city}
                   </Text>
                   <Text color="fg.muted">
-                    {raceList?.nextRace.location.name} |{" "}
-                    {formatDate(raceList?.nextRace.dateStart)} a{" "}
-                    {formatDate(raceList?.nextRace.dateEnd)}
+                    {data?.nextRace.location.name} |{" "}
+                    {formatDate(data?.nextRace.dateStart)} a{" "}
+                    {formatDate(data?.nextRace.dateEnd)}
                   </Text>
                   <Box>
                     <Button asChild>
-                      <RouterLink to={`/meetings/${raceList?.nextRace.id}`}>
+                      <RouterLink to={`/meetings/${data?.nextRace.id}`}>
                         Ver detalhes
                       </RouterLink>
                     </Button>
@@ -94,7 +92,7 @@ export default function Home() {
         <Stack gap="4">
           <Heading size="xl">Calendario completo</Heading>
           <Stack gap="4">
-            {raceList?.races.map((race) => (
+            {data?.races.map((race) => (
               <Card.Root key={race.id}>
                 <Card.Body>
                   <Stack

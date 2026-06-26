@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { useListRaces } from "../api/useListRaces";
+import { useListRaces } from "../hooks/useListRaces";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("pt-BR", {
@@ -32,14 +32,14 @@ function formatDateTime(date: string) {
 
 export default function MeetingDetails() {
   const { id } = useParams();
-  const { raceList, loading, error } = useListRaces();
+  const { data: raceList, isLoading, error } = useListRaces();
 
   const event =
     raceList && raceList.races.find((formula1Event) => formula1Event.id === id);
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Container maxW="5xl" py="10">
+      <Container maxW="5xl">
         <Stack align="center" gap="4">
           <Spinner size="lg" />
           <Text>Carregando meeting...</Text>
@@ -50,10 +50,10 @@ export default function MeetingDetails() {
 
   if (error) {
     return (
-      <Container maxW="5xl" py="10">
+      <Container maxW="5xl">
         <Alert.Root status="error">
           <Alert.Indicator />
-          <Alert.Title>{error}</Alert.Title>
+          <Alert.Title>{error.message}</Alert.Title>
         </Alert.Root>
       </Container>
     );
@@ -61,7 +61,7 @@ export default function MeetingDetails() {
 
   if (!event) {
     return (
-      <Container maxW="5xl" py="10">
+      <Container maxW="5xl">
         <Stack gap="4">
           <Alert.Root status="warning">
             <Alert.Indicator />
@@ -76,7 +76,7 @@ export default function MeetingDetails() {
   }
 
   return (
-    <Container maxW="5xl" py="10">
+    <Container maxW="5xl">
       <Stack gap="6">
         <Button asChild alignSelf="flex-start" variant="outline">
           <RouterLink to="/">Voltar</RouterLink>
