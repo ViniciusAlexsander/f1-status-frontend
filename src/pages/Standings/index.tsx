@@ -74,7 +74,7 @@ export default function Standings() {
                 <Stack>
                   <Stat.Root>
                     <Stat.ValueText>{driver.points}</Stat.ValueText>
-                    <Stat.ValueUnit>Pontos</Stat.ValueUnit>
+                    <Stat.ValueUnit>pontos</Stat.ValueUnit>
                   </Stat.Root>
                 </Stack>
               </Stack>
