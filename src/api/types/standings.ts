@@ -15,3 +15,12 @@ export interface DriverStandingsData {
   number: number;
   teams: TeamData[];
 }
+
+export interface IConstructorStandingsData {
+  id: string;
+  position: number;
+  points: number;
+  name: string;
+  shortName: string;
+  color: string;
+}

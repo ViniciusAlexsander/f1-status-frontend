@@ -1,0 +1,70 @@
+import { useConstructorsStandings } from "@/hooks/useConstructorsStandings";
+import {
+  Alert,
+  Badge,
+  Heading,
+  Spinner,
+  Stack,
+  Stat,
+  Text,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@chakra-ui/react";
+
+export default function DriversStandings() {
+  const {
+    data: constructorsStandings,
+    isLoading,
+    isError,
+  } = useConstructorsStandings();
+
+  if (isLoading) {
+    return (
+      <Stack align="center" gap="4">
+        <Spinner size="lg" />
+        <Text>Carregando classificação</Text>
+      </Stack>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert.Root status="error">
+        <Alert.Indicator />
+        <Alert.Title>Erro ao carregar classificação</Alert.Title>
+      </Alert.Root>
+    );
+  }
+
+  return (
+    <Stack gap="4">
+      <Table.Root size="sm" variant="outline">
+        <TableBody>
+          {constructorsStandings &&
+            constructorsStandings.map((constructor) => (
+              <TableRow key={constructor.id}>
+                <TableCell>
+                  <Heading size="lg" minW={5}>
+                    {constructor.position}
+                  </Heading>
+                </TableCell>
+                <TableCell>
+                  <Badge color={constructor.color}>
+                    {constructor.shortName}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Stat.Root>
+                    <Stat.ValueText>{constructor.points}</Stat.ValueText>
+                    <Stat.ValueUnit>pontos</Stat.ValueUnit>
+                  </Stat.Root>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table.Root>
+    </Stack>
+  );
+}
