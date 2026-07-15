@@ -31,7 +31,7 @@ export const CountDown = ({ nextRace }: ICountDownProps) => {
   const days = Math.floor(countDown / (1000 * 60 * 60 * 24));
 
   return (
-    <Stack>
+    <Stack alignItems="end">
       <Heading size="4xl" color="fg.success">
         {days}d {hours}h {minutes}m {seconds}s
       </Heading>
