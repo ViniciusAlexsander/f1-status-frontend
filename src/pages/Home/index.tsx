@@ -11,10 +11,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { useListRaces } from "../hooks/useListRaces";
+import { useListRaces } from "../../hooks/useListRaces";
+import { useEffect, useState } from "react";
+import { CountDown } from "./components/CountDown";
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("pt-BR", {
+  return new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -58,29 +60,37 @@ export default function Home() {
           <Card.Body>
             <Stack gap="4">
               <Stack direction="row" justify="space-between" gap="4">
-                <Heading size="lg">Proxima race week</Heading>
+                <Heading size="lg">Próxima race week</Heading>
                 {data?.nextRace ? <Badge>{data?.nextRace.status}</Badge> : null}
               </Stack>
 
               {data?.nextRace ? (
-                <Stack gap="3">
-                  <Heading size="2xl">{data?.nextRace.name}</Heading>
-                  <Text>
-                    {data?.nextRace.location.country.name} -{" "}
-                    {data?.nextRace.location.city}
-                  </Text>
-                  <Text color="fg.muted">
-                    {data?.nextRace.location.name} |{" "}
-                    {formatDate(data?.nextRace.dateStart)} a{" "}
-                    {formatDate(data?.nextRace.dateEnd)}
-                  </Text>
-                  <Box>
-                    <Button asChild>
-                      <RouterLink to={`/meetings/${data?.nextRace.id}`}>
-                        Ver detalhes
-                      </RouterLink>
-                    </Button>
-                  </Box>
+                <Stack
+                  gap="3"
+                  direction="row"
+                  justify="space-between"
+                  align="center"
+                >
+                  <Stack gap="3">
+                    <Heading size="2xl">{data?.nextRace.name}</Heading>
+                    <Text>
+                      {data?.nextRace.location.country.name} -{" "}
+                      {data?.nextRace.location.city}
+                    </Text>
+                    <Text color="fg.muted">
+                      {data?.nextRace.location.name} |{" "}
+                      {formatDate(data?.nextRace.dateStart)} a{" "}
+                      {formatDate(data?.nextRace.dateEnd)}
+                    </Text>
+                    <Box>
+                      <Button asChild>
+                        <RouterLink to={`/meetings/${data?.nextRace.id}`}>
+                          Ver detalhes
+                        </RouterLink>
+                      </Button>
+                    </Box>
+                  </Stack>
+                  <CountDown nextRace={data.nextRace} />
                 </Stack>
               ) : (
                 <Text>Nenhum proximo meeting encontrado.</Text>
