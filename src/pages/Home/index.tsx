@@ -13,14 +13,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useListRaces } from "../../hooks/useListRaces";
 import { CountDown } from "./components/CountDown";
-
-function formatDate(date: string) {
-  return new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
+import { formatDateWithoutTime } from "@/utils/date";
 
 export default function Home() {
   const { data, isLoading, isError, error } = useListRaces();
@@ -78,8 +71,8 @@ export default function Home() {
                     </Text>
                     <Text color="fg.muted">
                       {data?.nextRace.location.name} |{" "}
-                      {formatDate(data?.nextRace.dateStart)} a{" "}
-                      {formatDate(data?.nextRace.dateEnd)}
+                      {formatDateWithoutTime(data?.nextRace.dateStart)} a{" "}
+                      {formatDateWithoutTime(data?.nextRace.dateEnd)}
                     </Text>
                     <Box>
                       <Button asChild>
@@ -119,8 +112,8 @@ export default function Home() {
                       </Text>
                       <Text color="fg.muted">{race.location.name}</Text>
                       <Text color="fg.muted" fontSize="sm">
-                        {formatDate(race.dateStart)} a{" "}
-                        {formatDate(race.dateEnd)}
+                        {formatDateWithoutTime(race.dateStart)} a{" "}
+                        {formatDateWithoutTime(race.dateEnd)}
                       </Text>
                     </Stack>
 

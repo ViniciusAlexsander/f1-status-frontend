@@ -11,24 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useListRaces } from "../hooks/useListRaces";
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatDateTime(date: string) {
-  return new Date(date).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+import { formatDate, formatDateTime } from "@/utils/date";
 
 export default function MeetingDetails() {
   const { id } = useParams();
