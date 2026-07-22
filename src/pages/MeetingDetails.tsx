@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useListRaces } from "../hooks/useListRaces";
-import { formatDate, formatDateTime } from "@/utils/date";
+import { formatDate, formatDateTimeString } from "@/utils/date";
 
 export default function MeetingDetails() {
   const { id } = useParams();
@@ -111,10 +111,10 @@ export default function MeetingDetails() {
                         gap="1"
                       >
                         <Text color="fg.muted" fontSize="sm">
-                          Inicio: {formatDateTime(session.startTime)}
+                          Inicio: {formatDateTimeString(session.startTime)}
                         </Text>
                         <Text color="fg.muted" fontSize="sm">
-                          Fim: {formatDateTime(session.endTime)}
+                          Fim: {formatDateTimeString(session.endTime)}
                         </Text>
                       </Stack>
                     </Stack>

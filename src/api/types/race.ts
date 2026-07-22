@@ -49,7 +49,8 @@ export interface PaginationMeta {
 
 export interface RaceListData {
   races: RaceWeek[];
-  nextRace: RaceWeek;
+  nextRace: RaceWeek | null;
+  currentRace: RaceWeek | null;
 }
 
 export interface RaceListResponse {
