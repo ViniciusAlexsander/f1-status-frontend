@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function Standings() {
   const [value, setValue] = useState<string | null>("Pilotos");
   return (
-    <Container>
+    <Container maxW="5xl">
       <Stack mb="4">
         <Heading size="3xl">Classificação</Heading>
       </Stack>
@@ -33,9 +33,9 @@ export default function Standings() {
           base: "none",
           sm: "flex",
         }}
-        direction="row"
+        direction={{ sm: "column", lg: "row" }}
         justifyContent="center"
-        gap="24"
+        gap={{ sm: "6", lg: "24" }}
       >
         <DriversStandings />
         <ConstructorsStandings />

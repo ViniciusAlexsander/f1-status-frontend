@@ -1,3 +1,4 @@
+import { DRIVERS_DATA } from "@/api/driverConstants";
 import {
   timingToArray,
   type DriverTimingItem,
@@ -22,7 +23,7 @@ export function useDriversLiveTimingData() {
 
       const timing: TimingUpdate = JSON.parse(data);
 
-      setDrivers(timingToArray(timing));
+      setDrivers(timingToArray(timing, DRIVERS_DATA));
     };
 
     eventSource.addEventListener("timing_update", handleTimingUpdate);
