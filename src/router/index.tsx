@@ -4,6 +4,7 @@ import MeetingDetails from "../pages/MeetingDetails";
 import NotFound from "../pages/NotFound";
 import { AppLayout } from "@/pages/AppLayout";
 import Standings from "@/pages/Standings";
+import LiveTiming from "@/pages/LiveTiming";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: "/standings",
         element: <Standings />,
+      },
+      {
+        path: "/live",
+        element: <LiveTiming />,
       },
     ],
   },

@@ -10,13 +10,16 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useListRaces } from "../../hooks/useListRaces";
 import { CountDown } from "./components/CountDown";
 import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
+import type { EventStatus } from "@/api/types/race";
+import { RiArrowRightLine } from "react-icons/ri";
 
 export default function Home() {
   const { data, isLoading, isError, error } = useListRaces();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -92,7 +95,12 @@ export default function Home() {
                                     {session.name}
                                   </Heading>
                                   <Stack direction="row" gap="2" wrap="wrap">
-                                    <Badge variant="outline">
+                                    <Badge
+                                      variant="outline"
+                                      color={getEventStatusColor(
+                                        session.status,
+                                      )}
+                                    >
                                       {session.status}
                                     </Badge>
                                   </Stack>
@@ -105,6 +113,16 @@ export default function Home() {
                                     até {formatDateTime(session.endTime)}
                                   </Text>
                                 </Stack>
+                                {session.status === "ongoing" && (
+                                  <Button
+                                    size="xs"
+                                    colorPalette="teal"
+                                    variant="outline"
+                                    onClick={() => navigate("/live")}
+                                  >
+                                    Ver <RiArrowRightLine />
+                                  </Button>
+                                )}
                               </Stack>
                             </Card.Body>
                           </Card.Root>
@@ -207,3 +225,9 @@ export default function Home() {
     </Container>
   );
 }
+
+const getEventStatusColor = (status: EventStatus) => {
+  if (status === "completed") return "fg.muted";
+  if (status === "ongoing") return "green.500";
+  if (status === "scheduled") return "fg.info";
+};

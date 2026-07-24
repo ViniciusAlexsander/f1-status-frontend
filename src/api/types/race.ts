@@ -1,4 +1,4 @@
-export type EventStatus = "scheduled" | "completed" | "cancelled";
+export type EventStatus = "scheduled" | "completed" | "cancelled" | "ongoing";
 
 export type ScheduleType =
   | "practice"
