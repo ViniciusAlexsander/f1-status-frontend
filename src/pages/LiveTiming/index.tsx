@@ -17,19 +17,27 @@ export default function LiveTiming() {
     <Container maxW="5xl">
       <Stack gap="6">
         <Heading size="3xl">Live Timing</Heading>
-        <Stack gap="4">
+        <Stack gap="4" alignItems="center">
           <Table.ScrollArea borderWidth="1px" maxW="xl">
             <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader minW="100px">Posição</Table.ColumnHeader>
-                  <Table.ColumnHeader minW="100px">Piloto</Table.ColumnHeader>
-                  <Table.ColumnHeader minW="100px">
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
+                    Posição
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
+                    Piloto
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
                     Tempo de volta
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader minW="100px">Gap</Table.ColumnHeader>
-                  <Table.ColumnHeader minW="100px">Voltas</Table.ColumnHeader>
-                  <Table.ColumnHeader minW="100px">
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
+                    Gap
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
+                    Voltas
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
                     Pit Stops
                   </Table.ColumnHeader>
                 </Table.Row>
