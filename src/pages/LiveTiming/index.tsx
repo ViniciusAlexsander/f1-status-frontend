@@ -34,6 +34,9 @@ export default function LiveTiming() {
                     Gap
                   </Table.ColumnHeader>
                   <Table.ColumnHeader minW={{ base: "80px", md: "auto" }}>
+                    Best Time
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader minW={{ base: "80px", md: "auto" }}>
                     Lap Time
                   </Table.ColumnHeader>
                   <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
@@ -67,6 +70,9 @@ export default function LiveTiming() {
                     </TableCell>
                     <TableCell whiteSpace="nowrap">
                       {driver.TimeDiffToPositionAhead || "-"}
+                    </TableCell>
+                    <TableCell whiteSpace="nowrap">
+                      {driver.BestLapTime ? driver.BestLapTime.Value : "-"}
                     </TableCell>
                     <TableCell whiteSpace="nowrap">
                       {driver.LastLapTime ? driver.LastLapTime.Value : "-"}
