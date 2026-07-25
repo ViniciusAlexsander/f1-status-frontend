@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 
 export function AppLayout() {
   return (
-    <Box px="4" py="8">
+    <Box py="8">
       <Box paddingBottom="4">
         <Menu />
       </Box>
