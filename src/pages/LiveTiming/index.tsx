@@ -10,6 +10,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Text,
 } from "@chakra-ui/react";
 
 export default function LiveTiming() {
@@ -23,10 +24,9 @@ export default function LiveTiming() {
         <Stack gap="4" w="full">
           {session && (
             <Stack alignItems="center" justifyContent="center" direction="row">
-              <Heading size={{ base: "md", md: "xl" }}>
-                Lap: {session.lap}
-              </Heading>
-              <Heading> </Heading>
+              <Text>
+                Lap: {session.lap} | {statusTrackText(session.trackStatus)}
+              </Text>
             </Stack>
           )}
           <Table.ScrollArea borderWidth="1px" w="full" maxW="full">
@@ -105,4 +105,9 @@ const pitStopText = (driver: DriverTimingItem) => {
   if (driver.PitOut) return "Saindo do pit stop";
   if (driver.NumberOfPitStops) return driver.NumberOfPitStops;
   return "-";
+};
+
+const statusTrackText = (status: string) => {
+  if (status === "AllClear") return "Pista liberada";
+  else return status;
 };
