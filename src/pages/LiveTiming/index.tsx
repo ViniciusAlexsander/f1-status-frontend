@@ -1,5 +1,6 @@
 import { type DriverTimingItem } from "@/api/types/livetiming";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
+import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import {
   Badge,
   Container,
@@ -9,16 +10,26 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Text,
 } from "@chakra-ui/react";
 
 export default function LiveTiming() {
   const { drivers } = useDriversLiveTimingData();
+  const { session } = useSessionLiveTimingData();
 
   return (
     <Container maxW="5xl">
       <Stack gap="6">
         <Heading size="3xl">Live Timing</Heading>
         <Stack gap="4" w="full">
+          {session && (
+            <Stack alignItems="center" justifyContent="center" direction="row">
+              <Heading size={{ base: "md", md: "xl" }}>
+                Lap: {session.lap}
+              </Heading>
+              <Heading> </Heading>
+            </Stack>
+          )}
           <Table.ScrollArea borderWidth="1px" w="full" maxW="full">
             <Table.Root
               size="sm"
@@ -33,17 +44,14 @@ export default function LiveTiming() {
                   <Table.ColumnHeader minW={{ base: "50px", md: "auto" }}>
                     Gap
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader minW={{ base: "80px", md: "auto" }}>
+                  <Table.ColumnHeader minW={{ base: "50px", md: "auto" }}>
                     Best Time
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader minW={{ base: "80px", md: "auto" }}>
+                  <Table.ColumnHeader minW={{ base: "50px", md: "auto" }}>
                     Lap Time
                   </Table.ColumnHeader>
                   <Table.ColumnHeader minW={{ base: "100px", md: "auto" }}>
                     Pit Stops
-                  </Table.ColumnHeader>
-                  <Table.ColumnHeader minW={{ base: "50px", md: "auto" }}>
-                    Laps
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
@@ -79,9 +87,6 @@ export default function LiveTiming() {
                     </TableCell>
                     <TableCell whiteSpace="nowrap">
                       {pitStopText(driver)}
-                    </TableCell>
-                    <TableCell whiteSpace="nowrap">
-                      {driver.NumberOfLaps || "-"}
                     </TableCell>
                   </TableRow>
                 ))}

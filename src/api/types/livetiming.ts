@@ -9,6 +9,12 @@ export interface TimingPayload {
   Lines: Record<string, DriverTiming>;
 }
 
+export interface SessionStatus {
+  lap: number;
+  trackStatus: string;
+  sessionStatus: string;
+}
+
 export interface DriverTiming {
   TimeDiffToFastest?: string;
   TimeDiffToPositionAhead?: string;

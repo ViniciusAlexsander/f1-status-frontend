@@ -15,7 +15,7 @@ export function useDriversLiveTimingData() {
     );
 
     eventSource.onopen = () => {
-      console.log("SSE conectado");
+      console.log("SSE conectado - drivers");
     };
 
     const handleTimingUpdate = (event: Event) => {
