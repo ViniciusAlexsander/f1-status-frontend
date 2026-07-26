@@ -10,7 +10,6 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Text,
 } from "@chakra-ui/react";
 
 export default function LiveTiming() {
