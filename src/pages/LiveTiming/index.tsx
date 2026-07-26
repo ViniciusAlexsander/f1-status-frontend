@@ -95,7 +95,10 @@ export default function LiveTiming() {
 }
 
 const pitStopText = (driver: DriverTimingItem) => {
+  if (driver.Stopped) return "Abandonou";
+  if (driver.Retired) return "Abandonou";
   if (driver.InPit) return "Em pit stop";
   if (driver.PitOut) return "Saindo do pit stop";
-  return driver.NumberOfPitStops;
+  if (driver.NumberOfPitStops) return driver.NumberOfPitStops;
+  return "-";
 };
