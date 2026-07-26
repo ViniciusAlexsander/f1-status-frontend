@@ -19,6 +19,12 @@ export interface DriverTiming {
   TimeDiffToFastest?: string;
   TimeDiffToPositionAhead?: string;
 
+  GapToLeader?: string;
+  IntervalToPositionAhead?: {
+    Value: string;
+    Catching: false;
+  };
+
   Line?: number;
   Position?: string;
   ShowPosition?: boolean;

@@ -76,7 +76,9 @@ export default function LiveTiming() {
                       )}
                     </TableCell>
                     <TableCell whiteSpace="nowrap">
-                      {driver.TimeDiffToPositionAhead || "-"}
+                      {driver.IntervalToPositionAhead
+                        ? driver.IntervalToPositionAhead.Value
+                        : "-"}
                     </TableCell>
                     <TableCell whiteSpace="nowrap">
                       {driver.BestLapTime ? driver.BestLapTime.Value : "-"}
