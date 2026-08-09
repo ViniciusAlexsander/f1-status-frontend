@@ -5,12 +5,10 @@ import { Box, Container } from "@chakra-ui/react";
 
 export function AppLayout() {
   return (
-    <Box py="8">
-      <Box paddingBottom="4">
-        <Menu />
-      </Box>
+    <Box py={{ base: 4, md: 8 }}>
+      <Menu />
 
-      <Container maxW="5xl" pb="6">
+      <Container maxW="5xl" py={{ base: 4, md: 6 }}>
         <AdBanner />
       </Container>
 
