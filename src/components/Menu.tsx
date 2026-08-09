@@ -1,13 +1,6 @@
 import { MobileNavDrawer } from "@/components/navigation/MobileNavDrawer";
 import { NavLinks } from "@/components/navigation/NavLinks";
-import { ColorModeButton } from "@/components/ui/color-mode";
-import {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Link,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Link } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
 export function Menu() {
@@ -36,7 +29,7 @@ export function Menu() {
 
           <Flex align="center" gap="1">
             <MobileNavDrawer />
-            <ColorModeButton />
+            {/* <ColorModeButton /> */}
           </Flex>
         </Flex>
       </Container>
