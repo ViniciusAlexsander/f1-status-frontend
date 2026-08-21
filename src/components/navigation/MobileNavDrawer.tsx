@@ -1,10 +1,5 @@
 import { NavLinks } from "@/components/navigation/NavLinks";
-import {
-  Drawer,
-  IconButton,
-  Portal,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Drawer, IconButton, Portal, useDisclosure } from "@chakra-ui/react";
 import { RiMenuLine } from "react-icons/ri";
 
 export function MobileNavDrawer() {

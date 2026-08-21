@@ -1,17 +1,5 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  Card,
-  Container,
-  Heading,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { Link as RouterLink, useParams } from "react-router-dom";
-import { useListRaces } from "../hooks/useListRaces";
-import { formatDate, formatDateTimeString } from "@/utils/date";
+import { Container, Stack, Text } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
 
 export default function SessionDetails() {
   const { meetingsId, sessionId } = useParams();

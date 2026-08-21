@@ -1,11 +1,7 @@
 export type EventStatus = "scheduled" | "completed" | "cancelled" | "ongoing";
 
 export type ScheduleType =
-  | "practice"
-  | "qualifying"
-  | "race"
-  | "sprint"
-  | "sprint_qualifying";
+  "practice" | "qualifying" | "race" | "sprint" | "sprint_qualifying";
 
 export interface Country {
   name: string;

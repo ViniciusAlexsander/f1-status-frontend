@@ -17,7 +17,10 @@ export function NavLinks({ variant, onNavigate }: NavLinksProps) {
         to={item.path}
         end={item.end}
         onClick={onNavigate}
-        style={{ textDecoration: "none", width: variant === "mobile" ? "100%" : undefined }}
+        style={{
+          textDecoration: "none",
+          width: variant === "mobile" ? "100%" : undefined,
+        }}
       >
         {({ isActive }) => (
           <Button
