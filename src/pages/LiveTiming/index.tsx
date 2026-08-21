@@ -111,5 +111,6 @@ const pitStopText = (driver: DriverTimingItem) => {
 
 const statusTrackText = (status: string) => {
   if (status === "AllClear") return "Pista liberada";
+  if (status === "VSCEnding") return "Virtual safety car terminando";
   else return status;
 };

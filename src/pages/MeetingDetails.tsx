@@ -106,16 +106,25 @@ export default function MeetingDetails() {
                           <Badge variant="outline">{session.status}</Badge>
                         </Stack>
                       </Stack>
-                      <Stack
-                        align={{ base: "flex-start", md: "flex-end" }}
-                        gap="1"
-                      >
+                      <Stack align={{ base: "flex-start" }} gap="1">
                         <Text color="fg.muted" fontSize="sm">
                           Inicio: {formatDateTimeString(session.startTime)}
                         </Text>
                         <Text color="fg.muted" fontSize="sm">
                           Fim: {formatDateTimeString(session.endTime)}
                         </Text>
+                      </Stack>
+                      <Stack
+                        align={{ base: "flex-end", md: "flex-end" }}
+                        gap="1"
+                      >
+                        <Button asChild variant="outline">
+                          <RouterLink
+                            to={`/meetings/${event.id}/sessions/${session.id}`}
+                          >
+                            Ver detalhes
+                          </RouterLink>
+                        </Button>
                       </Stack>
                     </Stack>
                   </Card.Body>

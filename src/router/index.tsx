@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import { AppLayout } from "@/pages/AppLayout";
 import Standings from "@/pages/Standings";
 import LiveTiming from "@/pages/LiveTiming";
+import SessionDetails from "@/pages/SessionDetails";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: "/meetings/:id",
         element: <MeetingDetails />,
+      },
+      {
+        path: "/meetings/:meetingsId/sessions/:sessionId",
+        element: <SessionDetails />,
       },
       {
         path: "/standings",
