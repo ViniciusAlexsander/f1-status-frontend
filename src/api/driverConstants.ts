@@ -331,4 +331,19 @@ export const DRIVERS_DATA: DriverData[] = [
       },
     ],
   },
+  {
+    id: "9907ae36-717f-4e7c-9d0c-3d0fcc358b03",
+    firstName: "Yuki",
+    lastName: "Tsunoda",
+    code: "TSU",
+    number: 22,
+    teams: [
+      {
+        id: "1f2a5e71-d303-430c-a795-fe9f2236fcbd",
+        name: "Racing Bulls",
+        shortName: "Racing Bulls",
+        color: "#6692ff",
+      },
+    ],
+  },
 ];
