@@ -15,7 +15,11 @@ import { Link as RouterLink } from "react-router-dom";
 import { RiArrowRightLine, RiCalendarLine, RiRadioLine } from "react-icons/ri";
 import type { RaceListData, RaceWeek, Schedule } from "@/api/types/race";
 import { useListRaces } from "@/hooks/useListRaces";
-import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
+import {
+  formatDateCompact,
+  formatDateTime,
+  formatDateWithoutTime,
+} from "@/utils/date";
 import { SiteHeader } from "@/components/dashboard/SiteHeader";
 import { ViewTabs, type ViewTab } from "@/components/dashboard/ViewTabs";
 
@@ -436,6 +440,13 @@ export default function F1Dashboard() {
       <SiteHeader
         isLive={liveMode}
         statusLabel={statusLabel}
+        compactStatusLabel={
+          liveMode
+            ? "Sessão ao vivo"
+            : raceData.nextRace
+              ? `Largada em ${formatDateCompact(raceData.nextRace.dateStart)}`
+              : "Temporada"
+        }
         onToggleLive={() => setLiveMode((value) => !value)}
       />
       <Container maxW="1600px" px={{ base: 4, md: 6 }} pb="10">

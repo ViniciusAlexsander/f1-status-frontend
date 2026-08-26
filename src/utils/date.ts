@@ -6,6 +6,14 @@ export function formatDateWithoutTime(date: string) {
   });
 }
 
+export function formatDateCompact(date: string) {
+  return new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export function formatDate(date: string) {
   return new Date(date).toLocaleDateString("pt-BR", {
     day: "2-digit",

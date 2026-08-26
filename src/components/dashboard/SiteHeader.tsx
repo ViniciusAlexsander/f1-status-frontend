@@ -13,12 +13,14 @@ import { Link as RouterLink } from "react-router-dom";
 type SiteHeaderProps = {
   isLive: boolean;
   statusLabel: string;
+  compactStatusLabel?: string;
   onToggleLive?: () => void;
 };
 
 export function SiteHeader({
   isLive,
   statusLabel,
+  compactStatusLabel,
   onToggleLive,
 }: SiteHeaderProps) {
   return (
@@ -35,7 +37,12 @@ export function SiteHeader({
       <Box h="0.5" bg={isLive ? "f1.500" : "border"} />
       <Container maxW="1600px" py="3" px={{ base: 4, md: 6 }}>
         <Flex align="center" gap="4">
-          <Link asChild _hover={{ textDecoration: "none" }}>
+          <Link
+            asChild
+            display="flex"
+            flexShrink="0"
+            _hover={{ textDecoration: "none" }}
+          >
             <RouterLink to="/">
               <HStack minW="0" gap="3">
                 <Box w="1.5" h="6" bg={isLive ? "f1.500" : "fg.muted"} />
@@ -90,7 +97,7 @@ export function SiteHeader({
             ))}
           </HStack>
 
-          <HStack ml="auto" gap={{ base: 2, md: 3 }}>
+          <HStack ml="auto" flexShrink="0" gap={{ base: 2, md: 3 }}>
             <HStack
               display={{ base: "none", md: "flex" }}
               gap="2"
@@ -133,21 +140,33 @@ export function SiteHeader({
         display={{ base: "block", md: "none" }}
         borderTopWidth="1px"
         borderColor={isLive ? "f1.500/25" : "border"}
-        px="4"
+        px={{ base: 3, sm: 4 }}
         py="1.5"
       >
-        <Text
+        <Flex
+          align="center"
+          justify="space-between"
+          gap="3"
+          minW="0"
           fontFamily="mono"
           fontSize="10px"
           letterSpacing="0.12em"
           color={isLive ? "fg" : "fg.muted"}
           textTransform="uppercase"
         >
-          {isLive ? "Sessão em pista" : "Sem sessão em pista"}
-          <Text as="span" float="right" color="fg.muted">
-            {statusLabel}
+          <Text minW="0" truncate>
+            {isLive ? "Sessão em pista" : "Sem sessão em pista"}
           </Text>
-        </Text>
+          <Text
+            flexShrink="1"
+            maxW="50%"
+            truncate
+            color="fg.muted"
+            textAlign="right"
+          >
+            {compactStatusLabel ?? statusLabel}
+          </Text>
+        </Flex>
       </Box>
     </Box>
   );
