@@ -39,7 +39,21 @@ export default function DriversStandings() {
   }
 
   return (
-    <Stack gap="4">
+    <Stack
+      gap="4"
+      borderWidth="1px"
+      borderColor="border"
+      bg="card"
+      p={{ base: 2, md: 4 }}
+    >
+      <Heading
+        fontFamily="mono"
+        fontSize="11px"
+        letterSpacing="0.14em"
+        textTransform="uppercase"
+      >
+        Construtores
+      </Heading>
       <Table.Root size="sm" variant="outline">
         <TableBody>
           {constructorsStandings &&
@@ -51,7 +65,7 @@ export default function DriversStandings() {
                   </Heading>
                 </TableCell>
                 <TableCell>
-                  <Badge color={constructor.color}>
+                  <Badge bg={constructor.color} color="white">
                     {constructor.shortName}
                   </Badge>
                 </TableCell>

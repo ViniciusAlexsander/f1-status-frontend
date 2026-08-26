@@ -35,18 +35,32 @@ export default function DriversStandings() {
   }
 
   return (
-    <Stack gap="4">
+    <Stack
+      gap="4"
+      borderWidth="1px"
+      borderColor="border"
+      bg="card"
+      p={{ base: 2, md: 4 }}
+    >
+      <Heading
+        fontFamily="mono"
+        fontSize="11px"
+        letterSpacing="0.14em"
+        textTransform="uppercase"
+      >
+        Pilotos
+      </Heading>
       <Table.Root size="sm" variant="outline">
         <TableBody>
           {driversStandings &&
             driversStandings.map((driver) => (
               <TableRow key={driver.id}>
                 <TableCell>
-                  <Stack direction="row">
+                  <Stack direction="row" align="center">
                     <Heading size="lg" minW={5}>
                       {driver.position}
                     </Heading>
-                    <Badge color={driver.teams[0].color} minW={8}>
+                    <Badge bg={driver.teams[0].color} color="white" minW={8}>
                       {driver.code}
                     </Badge>
                   </Stack>

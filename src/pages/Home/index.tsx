@@ -16,8 +16,13 @@ import { CountDown } from "./components/CountDown";
 import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
 import type { EventStatus } from "@/api/types/race";
 import { RiArrowRightLine } from "react-icons/ri";
+import F1Dashboard from "./F1Dashboard";
 
 export default function Home() {
+  return <F1Dashboard />;
+}
+
+export function LegacyHome() {
   const { data, isLoading, isError, error } = useListRaces();
   const navigate = useNavigate();
 
@@ -116,7 +121,7 @@ export default function Home() {
                                 {session.status === "ongoing" && (
                                   <Button
                                     size="xs"
-                                    colorPalette="teal"
+                                    colorPalette="f1"
                                     variant="outline"
                                     onClick={() => navigate("/live")}
                                   >
