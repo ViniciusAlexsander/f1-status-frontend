@@ -162,7 +162,7 @@ export default function Home() {
                         {formatDateWithoutTime(data.nextRace.dateEnd)}
                       </Text>
                       <Box>
-                        <Button asChild>
+                        <Button asChild variant="outline">
                           <RouterLink to={`/meetings/${data.nextRace.id}`}>
                             Ver detalhes
                           </RouterLink>
@@ -207,7 +207,7 @@ export default function Home() {
                         </Text>
                       </Stack>
 
-                      <Stack align={{ base: "flex-start", md: "flex-end" }}>
+                      <Stack align={{ base: "flex-end", md: "flex-end" }}>
                         <Button asChild variant="outline">
                           <RouterLink to={`/meetings/${race.id}`}>
                             Ver detalhes
