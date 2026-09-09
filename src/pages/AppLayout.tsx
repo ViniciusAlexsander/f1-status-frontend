@@ -1,24 +1,45 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { AdBanner } from "@/components/AdBanner";
-import { Menu } from "@/components/Menu";
 import { SiteHeader } from "@/components/dashboard/SiteHeader";
 import { Box, Container } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 export function AppLayout() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const isHome = pathname === "/";
   const isLive = pathname === "/live";
 
+  useEffect(() => {
+    if (!hash) return;
+
+    const elementId = hash.replace("#", "");
+    const element = document.getElementById(elementId);
+
+    if (!element) return;
+
+    const scrollToElement = () => {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    requestAnimationFrame(scrollToElement);
+  }, [hash, pathname]);
+
   return (
-    <Box py={isHome || isLive ? 0 : { base: 4, md: 8 }}>
-      {isLive ? (
-        <SiteHeader isLive statusLabel="Sessão ao vivo" />
-      ) : (
-        !isHome && <Menu />
+    <Box minH="100dvh">
+      {!isHome && (
+        <SiteHeader
+          isLive={isLive}
+          statusLabel={isLive ? "Sessão ao vivo" : "Sem sessão em pista"}
+          compactStatusLabel={isLive ? "Sessão ao vivo" : "Sem sessão em pista"}
+        />
       )}
 
       {!isHome && !isLive && (
-        <Container maxW="5xl" py={{ base: 4, md: 6 }}>
+        <Container
+          maxW="1600px"
+          px={{ base: 4, md: 6 }}
+          py={{ base: 4, md: 6 }}
+        >
           <AdBanner />
         </Container>
       )}

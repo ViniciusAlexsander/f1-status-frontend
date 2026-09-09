@@ -8,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { RiFlagLine, RiRadioLine } from "react-icons/ri";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 
 type SiteHeaderProps = {
   isLive: boolean;
@@ -35,8 +35,8 @@ export function SiteHeader({
       backdropFilter="blur(14px)"
     >
       <Box h="0.5" bg={isLive ? "f1.500" : "border"} />
-      <Container maxW="1600px" py="3" px={{ base: 4, md: 6 }}>
-        <Flex align="center" gap="4">
+      <Container maxW="1600px" py={{ base: 3, md: 4 }} px={{ base: 4, md: 6 }}>
+        <Flex align="center" justify="space-between" gap="3">
           <Link
             asChild
             display="flex"
@@ -48,7 +48,7 @@ export function SiteHeader({
                 <Box w="1.5" h="6" bg={isLive ? "f1.500" : "fg.muted"} />
                 <Box lineHeight="1">
                   <Text
-                    fontSize="sm"
+                    fontSize={{ base: "sm", md: "md" }}
                     fontWeight="700"
                     letterSpacing="0.18em"
                     textTransform="uppercase"
@@ -70,30 +70,37 @@ export function SiteHeader({
             </RouterLink>
           </Link>
 
-          <HStack display={{ base: "none", lg: "flex" }} ml="4" gap="1">
+          <HStack display={{ base: "none", md: "flex" }} ml="auto" gap="1">
             {[
-              ["Ao vivo", "/live"],
-              ["Próxima", "/#proxima"],
-              ["Resultados", "/#resultados"],
+              ["Classificação", "/standings"],
+              ["Live timing", "/live"],
             ].map(([label, href]) => (
-              <Link
+              <NavLink
                 key={href}
-                asChild
-                px="3"
-                py="1.5"
-                color="fg.muted"
-                _hover={{
-                  bg: "bg.subtle",
-                  color: "fg",
+                to={href}
+                end={href === "/"}
+                style={({ isActive }) => ({
                   textDecoration: "none",
-                }}
-                fontFamily="mono"
-                fontSize="11px"
-                letterSpacing="0.12em"
-                textTransform="uppercase"
+                  color: isActive
+                    ? "var(--chakra-colors-fg)"
+                    : "var(--chakra-colors-fg-muted)",
+                  background: isActive
+                    ? "var(--chakra-colors-bg-subtle)"
+                    : "transparent",
+                })}
               >
-                <RouterLink to={href}>{label}</RouterLink>
-              </Link>
+                <Box
+                  px="3"
+                  py="1.5"
+                  _hover={{ bg: "bg.subtle", color: "fg" }}
+                  fontFamily="mono"
+                  fontSize="11px"
+                  letterSpacing="0.12em"
+                  textTransform="uppercase"
+                >
+                  {label}
+                </Box>
+              </NavLink>
             ))}
           </HStack>
 
@@ -113,8 +120,10 @@ export function SiteHeader({
                 {statusLabel}
               </Text>
             </HStack>
+
             {onToggleLive && (
               <Button
+                display={{ base: "none", md: "inline-flex" }}
                 size="sm"
                 variant={isLive ? "subtle" : "outline"}
                 colorPalette={isLive ? "f1" : "gray"}
@@ -137,11 +146,9 @@ export function SiteHeader({
         </Flex>
       </Container>
       <Box
-        display={{ base: "block", md: "none" }}
-        borderTopWidth="1px"
-        borderColor={isLive ? "f1.500/25" : "border"}
-        px={{ base: 3, sm: 4 }}
-        py="1.5"
+        display={{ base: "block", lg: "none" }}
+        px={{ base: 4, md: 6 }}
+        pb="3"
       >
         <Flex
           align="center"
@@ -151,22 +158,57 @@ export function SiteHeader({
           fontFamily="mono"
           fontSize="10px"
           letterSpacing="0.12em"
-          color={isLive ? "fg" : "fg.muted"}
+          color="fg.muted"
           textTransform="uppercase"
         >
-          <Text minW="0" truncate>
+          <Text truncate>
             {isLive ? "Sessão em pista" : "Sem sessão em pista"}
           </Text>
-          <Text
-            flexShrink="1"
-            maxW="50%"
-            truncate
-            color="fg.muted"
-            textAlign="right"
-          >
-            {compactStatusLabel ?? statusLabel}
-          </Text>
+          <Text truncate>{compactStatusLabel ?? statusLabel}</Text>
         </Flex>
+
+        <HStack
+          gap="0"
+          overflowX="auto"
+          pt="3"
+          css={{
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+          }}
+        >
+          {[
+            ["Classificação", "/standings"],
+            ["Live", "/live"],
+          ].map(([label, href]) => (
+            <NavLink
+              key={href}
+              to={href}
+              end={href === "/"}
+              style={({ isActive }) => ({
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                color: isActive
+                  ? "var(--chakra-colors-fg)"
+                  : "var(--chakra-colors-fg-muted)",
+                borderBottom: isActive
+                  ? "2px solid var(--chakra-colors-f1-500)"
+                  : "2px solid transparent",
+                padding: "0.55rem 0.75rem 0.45rem",
+                marginRight: "0.35rem",
+              })}
+            >
+              <Text
+                fontFamily="mono"
+                fontSize="10px"
+                letterSpacing="0.12em"
+                textTransform="uppercase"
+              >
+                {label}
+              </Text>
+            </NavLink>
+          ))}
+        </HStack>
       </Box>
     </Box>
   );
