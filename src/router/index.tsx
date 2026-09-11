@@ -31,10 +31,10 @@ export const router = createBrowserRouter([
         path: "/live",
         element: <LiveTiming />,
       },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ]);

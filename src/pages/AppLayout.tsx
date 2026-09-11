@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { AdBanner } from "@/components/AdBanner";
 import { SiteHeader } from "@/components/dashboard/SiteHeader";
+import { SiteFooter } from "@/components/dashboard/SiteFooter";
 import { Box, Container } from "@chakra-ui/react";
 import { useEffect } from "react";
 
@@ -45,6 +46,7 @@ export function AppLayout() {
       )}
 
       <Outlet />
+      <SiteFooter />
     </Box>
   );
 }
