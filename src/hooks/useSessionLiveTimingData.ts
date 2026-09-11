@@ -18,8 +18,6 @@ export function useSessionLiveTimingData() {
 
       const session: SessionStatus = JSON.parse(data);
 
-      console.log({ session });
-
       setSession(session);
     };
 

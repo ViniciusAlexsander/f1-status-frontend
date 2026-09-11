@@ -30,30 +30,6 @@ export default function LiveTiming() {
           borderColor="border"
           bg="card"
         >
-          <Flex
-            align="center"
-            justify="space-between"
-            gap="4"
-            borderBottomWidth="1px"
-            borderColor="border"
-            px={{ base: 4, md: 7 }}
-            py="3"
-          >
-            <Flex align="center" gap="3">
-              <Box w="1.5" h="6" bg="f1.500" />
-              <Text
-                fontFamily="mono"
-                fontSize="11px"
-                letterSpacing="0.14em"
-                textTransform="uppercase"
-              >
-                Ao vivo · {sessionName}
-              </Text>
-            </Flex>
-            <Badge colorPalette={hasLiveData ? "f1" : "gray"} variant="outline">
-              {hasLiveData ? "AO VIVO" : "AGUARDANDO CONEXÃO"}
-            </Badge>
-          </Flex>
           {session && (
             <Box
               borderBottomWidth="1px"
@@ -72,11 +48,12 @@ export default function LiveTiming() {
                   />
                   <Text
                     fontFamily="mono"
-                    fontSize="sm"
-                    letterSpacing="0.1em"
+                    fontSize="11px"
+                    letterSpacing="0.14em"
                     textTransform="uppercase"
                   >
-                    Sessão ao vivo
+                    {hasLiveData ? "Sessão ao vivo" : "Aguardando conexão"} ·{" "}
+                    {sessionName}
                   </Text>
                 </Flex>
                 <Flex
@@ -131,17 +108,11 @@ export default function LiveTiming() {
                       >
                         {driver.Position ?? driver.RacingNumber ?? "-"}
                       </Text>
-                      <Box
-                        w="1"
-                        h="5"
-                        flexShrink="0"
-                        bg={driver.driverData?.teams[0]?.color ?? "fg.muted"}
-                      />
                       {driver.driverData ? (
                         <Badge
                           flexShrink="0"
                           bg={driver.driverData.teams[0].color}
-                          color="white"
+                          color={driver.driverData.teams[0].textColor}
                           minW="8"
                           px="1.5"
                         >
@@ -192,9 +163,6 @@ export default function LiveTiming() {
                         {driver.LastLapTime?.Value ?? "-"}
                       </Text>
                       <Text truncate textAlign="right">
-                        <Text as="span" color="fg.muted">
-                          PIT{" "}
-                        </Text>
                         {pitStopText(driver)}
                       </Text>
                     </Grid>
@@ -210,8 +178,8 @@ export default function LiveTiming() {
               >
                 <Grid
                   templateColumns={{
-                    md: "2.5rem minmax(10rem, 1fr) 5.5rem 5.5rem 5.5rem 5.5rem 3.5rem",
-                    xl: "3rem minmax(16rem, 1fr) 7rem 7rem 7rem 7rem 4rem",
+                    md: "2.5rem minmax(10rem, 14rem) repeat(4, minmax(5.5rem, 1fr)) minmax(7rem, 1.2fr)",
+                    xl: "3rem minmax(16rem, 20rem) repeat(4, minmax(7rem, 1fr)) minmax(8rem, 1.2fr)",
                   }}
                   alignItems="center"
                   gap="2"
@@ -238,8 +206,8 @@ export default function LiveTiming() {
                     <Grid
                       key={driver.id}
                       templateColumns={{
-                        md: "2.5rem minmax(10rem, 1fr) 5.5rem 5.5rem 5.5rem 5.5rem 3.5rem",
-                        xl: "3rem minmax(16rem, 1fr) 7rem 7rem 7rem 7rem 4rem",
+                        md: "2.5rem minmax(10rem, 14rem) repeat(4, minmax(5.5rem, 1fr)) minmax(7rem, 1.2fr)",
+                        xl: "3rem minmax(16rem, 20rem) repeat(4, minmax(7rem, 1fr)) minmax(8rem, 1.2fr)",
                       }}
                       alignItems="center"
                       gap="2"
@@ -257,17 +225,11 @@ export default function LiveTiming() {
                         {driver.Position ?? driver.RacingNumber ?? "-"}
                       </Text>
                       <Flex minW="0" align="center" gap="2">
-                        <Box
-                          w="1"
-                          h="5"
-                          flexShrink="0"
-                          bg={driver.driverData?.teams[0]?.color ?? "fg.muted"}
-                        />
                         {driver.driverData ? (
                           <Badge
                             flexShrink="0"
                             bg={driver.driverData.teams[0].color}
-                            color="white"
+                            color={driver.driverData.teams[0].textColor}
                             minW="9"
                           >
                             {driver.driverData.code}
@@ -364,7 +326,7 @@ const pitStopText = (driver: DriverTimingItem) => {
   if (driver.Retired) return "Abandonou";
   if (driver.InPit) return "Em pit stop";
   if (driver.PitOut) return "Saindo do pit stop";
-  if (driver.NumberOfPitStops) return driver.NumberOfPitStops;
+  if (driver.NumberOfPitStops) return `PIT ${driver.NumberOfPitStops}`;
   return "-";
 };
 
