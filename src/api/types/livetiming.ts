@@ -86,11 +86,13 @@ export interface LastLapTime {
 export interface DriverTimingItem extends DriverTiming {
   id: string;
   driverData?: DriverData;
+  currentTyre?: TyreInfo;
 }
 
 export function timingToArray(
   timing: TimingUpdate,
   driversStandings: DriverData[],
+  tyres?: Record<string, TyreInfo>,
 ): DriverTimingItem[] {
   const driversPosition: DriverTimingItem[] = Object.entries(
     timing.payload.Lines,
@@ -109,7 +111,50 @@ export function timingToArray(
     driver.driverData = driversStandings.find(
       (d) => driver.RacingNumber && d.number.toString() === driver.RacingNumber,
     );
+
+    if (driver.RacingNumber && tyres) {
+      driver.currentTyre = tyres[driver.RacingNumber];
+    }
   });
 
   return driversPosition;
+}
+
+export interface TyreCompound {
+  label: string;
+  abbreviation: string;
+  color: string;
+}
+
+export interface TyreInfo {
+  Compound: TyreCompound;
+  New: boolean;
+}
+
+const TYRE_COMPOUNDS: Record<string, TyreCompound> = {
+  soft: { label: "SOFT", abbreviation: "S", color: "#E10600" },
+  medium: { label: "MEDIUM", abbreviation: "M", color: "#FFD700" },
+  hard: { label: "HARD", abbreviation: "H", color: "#FFFFFF" },
+  intermediate: { label: "INTERMEDIATE", abbreviation: "I", color: "#43B02A" },
+  wet: { label: "WET", abbreviation: "W", color: "#0067FF" },
+};
+
+export function normalizeTyreInfo(
+  tyre: Omit<TyreInfo, "Compound"> & { Compound: string },
+): TyreInfo {
+  const compound = tyre.Compound.trim().toLowerCase();
+
+  return {
+    ...tyre,
+    Compound: TYRE_COMPOUNDS[compound] ?? {
+      label: compound,
+      abbreviation: compound.charAt(0).toUpperCase(),
+      color: "#808080",
+    },
+  };
+}
+
+export interface ICurrentTyres {
+  Tyres: Record<string, TyreInfo>;
+  _kf: boolean;
 }

@@ -1,4 +1,4 @@
-import { type DriverTimingItem } from "@/api/types/livetiming";
+import { PitStopDisplay } from "./components/PitStopDisplay";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
 import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
@@ -163,7 +163,7 @@ export default function LiveTiming() {
                         {driver.LastLapTime?.Value ?? "-"}
                       </Text>
                       <Text truncate textAlign="right">
-                        {pitStopText(driver)}
+                        <PitStopDisplay driver={driver} />
                       </Text>
                     </Grid>
                   </Box>
@@ -307,7 +307,7 @@ export default function LiveTiming() {
                           driver.InPit || driver.PitOut ? "f1.500" : "fg.muted"
                         }
                       >
-                        {pitStopText(driver)}
+                        <PitStopDisplay driver={driver} />
                       </Text>
                     </Grid>
                   ))}
@@ -320,15 +320,6 @@ export default function LiveTiming() {
     </Container>
   );
 }
-
-const pitStopText = (driver: DriverTimingItem) => {
-  if (driver.Stopped) return "Abandonou";
-  if (driver.Retired) return "Abandonou";
-  if (driver.InPit) return "Em pit stop";
-  if (driver.PitOut) return "Saindo do pit stop";
-  if (driver.NumberOfPitStops) return `PIT ${driver.NumberOfPitStops}`;
-  return "-";
-};
 
 const statusTrackText = (status: string) => {
   if (status === "AllClear") return "Pista liberada";
