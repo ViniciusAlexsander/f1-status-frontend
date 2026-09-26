@@ -14,7 +14,6 @@ export function PitStopDisplay({ driver }: PitStopDisplayProps) {
         !driver.Retired &&
         !driver.InPit &&
         !driver.PitOut &&
-        driver.NumberOfPitStops &&
         tyre?.abbreviation && (
           <>
             <Text as="span" color={tyre.color} fontWeight="700">
