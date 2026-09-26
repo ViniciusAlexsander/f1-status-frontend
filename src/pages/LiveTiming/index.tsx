@@ -1,4 +1,5 @@
 import { PitStopDisplay } from "./components/PitStopDisplay";
+import { TrackStatusDisplay } from "./components/TrackStatusDisplay";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
 import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
@@ -64,7 +65,7 @@ export default function LiveTiming() {
                   textTransform="uppercase"
                 >
                   <Text color="fg">Volta {session.lap}</Text>
-                  <Text>{statusTrackText(session.trackStatus)}</Text>
+                  <TrackStatusDisplay status={session.trackStatus} />
                   <Text>{session.sessionStatus}</Text>
                 </Flex>
               </Flex>
@@ -321,8 +322,3 @@ export default function LiveTiming() {
   );
 }
 
-const statusTrackText = (status: string) => {
-  if (status === "AllClear") return "Pista liberada";
-  if (status === "VSCEnding") return "Virtual safety car terminando";
-  else return status;
-};
