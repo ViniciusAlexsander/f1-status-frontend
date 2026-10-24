@@ -138,7 +138,6 @@ export default function LiveTiming() {
                       >
                         {driver.IntervalToPositionAhead?.Value ??
                           driver.GapToLeader ??
-                          driver.Status ??
                           "-"}
                       </Text>
                     </Flex>
