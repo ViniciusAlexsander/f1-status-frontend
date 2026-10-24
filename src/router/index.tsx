@@ -6,6 +6,7 @@ import { AppLayout } from "@/pages/AppLayout";
 import Standings from "@/pages/Standings";
 import LiveTiming from "@/pages/LiveTiming";
 import SessionDetails from "@/pages/SessionDetails";
+import LiveTopicsDev from "@/pages/Dev/LiveTopicsDev";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/live",
         element: <LiveTiming />,
+      },
+      {
+        path: "/dev/live-topics",
+        element: <LiveTopicsDev />,
       },
       {
         path: "*",
