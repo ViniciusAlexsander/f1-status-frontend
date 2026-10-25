@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Badge,
   Box,
+  Button,
   Container,
   Flex,
   Heading,
@@ -9,97 +11,127 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { api } from "@/config/axios";
 
 const TOPICS = [
-  {
-    name: "SessionInfo",
-    endpoint: "/v1/live-timing/session-info",
-    event: "session_info_update",
-  },
-  {
-    name: "ExtrapolatedClock",
-    endpoint: "/v1/live-timing/extrapolated-clock",
-    event: "extrapolated_clock_update",
-  },
-  {
-    name: "WeatherData",
-    endpoint: "/v1/live-timing/weather-data",
-    event: "weather_data_update",
-  },
-  {
-    name: "RaceControlMessages",
-    endpoint: "/v1/live-timing/race-control-messages",
-    event: "race_control_messages_update",
-  },
+  "SessionInfo",
+  "SessionData",
+  "SessionStatus",
+  "ExtrapolatedClock",
+  "ArchiveStatus",
+  "Heartbeat",
+  "TimingData",
+  "TimingDataF1",
+  "TimingAppData",
+  "TimingStats",
+  "LapSeries",
+  "TopThree",
+  "DriverList",
+  "TrackStatus",
+  "RaceControlMessages",
+  "DriverTracker",
+  "Position.z",
+  "CarData.z",
+  "PitLaneTimeCollection",
+  "WeatherData",
+  "WeatherDataSeries",
+  "CurrentTyres",
+  "TyreStintSeries",
+  "ContentStreams",
+  "AudioStreams",
 ] as const;
 
-type StreamState = "connecting" | "connected" | "error";
-const STORAGE_KEY = "f1-status:dev-live-topic-payloads";
+type TopicEvent = {
+  id: string;
+  topic: string;
+  payload: unknown;
+  receivedAt: string;
+  isSnapshot: boolean;
+};
 
-function readStoredPayloads(): Record<string, unknown> {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? (JSON.parse(stored) as Record<string, unknown>) : {};
-  } catch {
-    return {};
-  }
-}
+type HistoryResponse = {
+  topic: string;
+  events: TopicEvent[];
+  total: number;
+  nextBefore: string | null;
+};
+
+type CollectorStatus = { connected: boolean };
 
 export default function LiveTopicsDev() {
-  const [selectedTopic, setSelectedTopic] = useState<string>(TOPICS[0].name);
-  const [payloads, setPayloads] = useState<Record<string, unknown>>(
-    readStoredPayloads,
-  );
-  const [states, setStates] = useState<Record<string, StreamState>>({});
-  const [counts, setCounts] = useState<Record<string, number>>({});
-  const [receivedAt, setReceivedAt] = useState<Record<string, string>>({});
-  const topic = TOPICS.find(({ name }) => name === selectedTopic) ?? TOPICS[0];
+  const [selectedTopic, setSelectedTopic] = useState<string>(TOPICS[0]);
+  const [events, setEvents] = useState<TopicEvent[]>([]);
+  const [total, setTotal] = useState(0);
+  const [connected, setConnected] = useState<boolean | undefined>();
+  const [loading, setLoading] = useState(true);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [error, setError] = useState<string>();
+  const selectedTopicRef = useRef(selectedTopic);
+  selectedTopicRef.current = selectedTopic;
+
+  const fetchLatest = useCallback(async () => {
+    try {
+      const [historyResponse, statusResponse] = await Promise.all([
+        api.get<HistoryResponse>(
+          `/v1/live-timing/topics/${encodeURIComponent(selectedTopic)}/history`,
+          { params: { limit: 100 } },
+        ),
+        api.get<CollectorStatus>("/v1/live-timing/topics/status"),
+      ]);
+      if (selectedTopicRef.current !== selectedTopic) return;
+      const latest = historyResponse.data;
+      setEvents((current) => {
+        const byId = new Map<string, TopicEvent>();
+        for (const event of [...latest.events, ...current]) byId.set(event.id, event);
+        return [...byId.values()].sort((a, b) => b.id.localeCompare(a.id));
+      });
+      setTotal(latest.total);
+      setConnected(statusResponse.data.connected);
+      setError(undefined);
+    } catch (cause) {
+      if (selectedTopicRef.current === selectedTopic) {
+        setError(cause instanceof Error ? cause.message : "Falha ao consultar o histórico.");
+      }
+    } finally {
+      if (selectedTopicRef.current === selectedTopic) setLoading(false);
+    }
+  }, [selectedTopic]);
 
   useEffect(() => {
-    setStates((current) => ({ ...current, [topic.name]: "connecting" }));
-    const source = new EventSource(`${API_BASE_URL}${topic.endpoint}`);
+    setEvents([]);
+    setTotal(0);
+    setLoading(true);
+    setLoadingOlder(false);
+    void fetchLatest();
+    const interval = window.setInterval(() => void fetchLatest(), 3000);
+    return () => window.clearInterval(interval);
+  }, [fetchLatest]);
 
-    source.onopen = () => {
-      setStates((current) => ({ ...current, [topic.name]: "connected" }));
-    };
-    source.addEventListener(topic.event, (event) => {
-      try {
-        const payload = JSON.parse((event as MessageEvent<string>).data) as unknown;
-        setPayloads((current) => {
-          const updated = { ...current, [topic.name]: payload };
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-          } catch {
-            // Keep the inspector usable if storage is unavailable or full.
-          }
-          return updated;
-        });
-        setCounts((current) => ({
-          ...current,
-          [topic.name]: (current[topic.name] ?? 0) + 1,
-        }));
-        setReceivedAt((current) => ({
-          ...current,
-          [topic.name]: new Date().toLocaleTimeString(),
-        }));
-      } catch {
-        setStates((current) => ({ ...current, [topic.name]: "error" }));
+  const loadOlder = async () => {
+    const before = events.at(-1)?.id;
+    if (!before) return;
+    setLoadingOlder(true);
+    try {
+      const response = await api.get<HistoryResponse>(
+        `/v1/live-timing/topics/${encodeURIComponent(selectedTopic)}/history`,
+        { params: { limit: 100, before } },
+      );
+      if (selectedTopicRef.current !== selectedTopic) return;
+      const older = response.data;
+      setEvents((current) => {
+        const byId = new Map(current.map((event) => [event.id, event]));
+        for (const event of older.events) byId.set(event.id, event);
+        return [...byId.values()].sort((a, b) => b.id.localeCompare(a.id));
+      });
+      setTotal(older.total);
+    } catch (cause) {
+      if (selectedTopicRef.current === selectedTopic) {
+        setError(cause instanceof Error ? cause.message : "Falha ao carregar eventos anteriores.");
       }
-    });
-    source.onerror = () => {
-      setStates((current) => ({ ...current, [topic.name]: "error" }));
-    };
-
-    return () => source.close();
-  }, [topic]);
-
-  const stateLabel = {
-    connecting: "Conectando",
-    connected: "Conectado",
-    error: "Reconectando / erro",
-  }[states[topic.name] ?? "connecting"];
+    } finally {
+      if (selectedTopicRef.current === selectedTopic) setLoadingOlder(false);
+    }
+  };
 
   return (
     <Container maxW="1600px" px={{ base: 4, md: 6 }}>
@@ -114,38 +146,65 @@ export default function LiveTopicsDev() {
           >
             Ferramentas de desenvolvimento
           </Text>
-          <Heading size={{ base: "xl", md: "2xl" }}>Live topic inspector</Heading>
-          <Text color="fg.muted">
-            Inspecione o payload bruto recebido de cada tópico novo do Live Timing.
-          </Text>
-        </Stack>
-
-        <SimpleGrid columns={{ base: 1, md: 2, xl: 4 }} gap="3">
-          {TOPICS.map((item) => (
-            <Box
-              as="button"
-              key={item.name}
-              textAlign="left"
-              borderWidth="1px"
-              borderColor={selectedTopic === item.name ? "f1.500" : "border"}
-              bg={selectedTopic === item.name ? "bg.subtle" : "card"}
-              p="4"
-              onClick={() => setSelectedTopic(item.name)}
-            >
-              <Flex align="center" justify="space-between" gap="2">
-                <Text fontFamily="mono" fontWeight="600" fontSize="sm">
-                  {item.name}
-                </Text>
-                {counts[item.name] ? (
-                  <Badge colorPalette="green">{counts[item.name]} eventos</Badge>
-                ) : null}
-              </Flex>
-              <Text mt="2" color="fg.muted" fontSize="xs" fontFamily="mono">
-                {item.endpoint}
+          <Flex align={{ base: "flex-start", md: "center" }} justify="space-between" gap="4" wrap="wrap">
+            <Box>
+              <Heading size={{ base: "xl", md: "2xl" }}>Live topic inspector</Heading>
+              <Text mt="2" color="fg.muted">
+                O backend escuta e registra os eventos continuamente, mesmo quando esta página está fechada.
               </Text>
             </Box>
-          ))}
-        </SimpleGrid>
+            <Badge colorPalette={connected ? "green" : "yellow"}>
+              {connected === undefined ? "Verificando coletor" : connected ? "Coletor conectado" : "Coletor reconectando"}
+            </Badge>
+          </Flex>
+        </Stack>
+
+        {error && (
+          <Alert.Root status="error">
+            <Alert.Indicator />
+            <Alert.Title>{error}</Alert.Title>
+          </Alert.Root>
+        )}
+
+        <Box
+          overflowX={{ base: "auto", md: "visible" }}
+          pb={{ base: 2, md: 0 }}
+          css={{
+            scrollbarWidth: { base: "thin", md: "auto" },
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 2, xl: 5 }}
+            gap="3"
+            minW={{ base: "max-content", md: "0" }}
+            gridAutoFlow={{ base: "column", md: "row" }}
+            gridAutoColumns={{ base: "minmax(180px, 72vw)", md: "auto" }}
+            templateRows={{ base: "repeat(2, auto)", md: "none" }}
+          >
+            {TOPICS.map((name) => (
+              <Box
+                as="button"
+                key={name}
+                textAlign="left"
+                borderWidth="1px"
+                borderColor={selectedTopic === name ? "f1.500" : "border"}
+                bg={selectedTopic === name ? "bg.subtle" : "card"}
+                p="4"
+                onClick={() => setSelectedTopic(name)}
+              >
+                <Text fontFamily="mono" fontWeight="600" fontSize="sm">
+                  {name}
+                </Text>
+                {selectedTopic === name && (
+                  <Text mt="2" color="fg.muted" fontSize="xs" fontFamily="mono">
+                    {total.toLocaleString()} eventos salvos
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
 
         <Box borderWidth="1px" borderColor="border" bg="card">
           <Flex
@@ -159,41 +218,56 @@ export default function LiveTopicsDev() {
             borderColor="border"
           >
             <Box>
-              <Text fontFamily="mono" fontWeight="600">{topic.name}</Text>
+              <Text fontFamily="mono" fontWeight="600">{selectedTopic}</Text>
               <Text color="fg.muted" fontSize="xs" fontFamily="mono">
-                Evento SSE: {topic.event}
+                Histórico bruto · atualiza a cada 3 segundos
               </Text>
             </Box>
-            <Flex gap="3" align="center">
-              <Badge colorPalette={states[topic.name] === "connected" ? "green" : "yellow"}>
-                {stateLabel}
-              </Badge>
-              <Text color="fg.muted" fontSize="xs" fontFamily="mono">
-                {counts[topic.name] ?? 0} eventos
-              </Text>
-              {receivedAt[topic.name] && (
-                <Text color="fg.muted" fontSize="xs" fontFamily="mono">
-                  Último: {receivedAt[topic.name]}
-                </Text>
-              )}
-            </Flex>
+            <Text color="fg.muted" fontSize="xs" fontFamily="mono">
+              Exibindo {events.length.toLocaleString()} de {total.toLocaleString()} eventos
+            </Text>
           </Flex>
-          <Box
-            as="pre"
-            m="0"
-            p={{ base: 4, md: 5 }}
-            overflowX="auto"
-            minH="320px"
-            maxH="70vh"
-            fontFamily="mono"
-            fontSize="sm"
-            lineHeight="1.65"
-            color="fg"
-          >
-            {payloads[topic.name] === undefined
-              ? "Aguardando o primeiro payload deste tópico..."
-              : JSON.stringify(payloads[topic.name], null, 2)}
-          </Box>
+
+          {events.length < total && events.length > 0 && (
+            <Box px="4" py="3" borderBottomWidth="1px" borderColor="border">
+              <Button size="sm" variant="outline" onClick={() => void loadOlder()} loading={loadingOlder}>
+                Carregar eventos anteriores
+              </Button>
+            </Box>
+          )}
+
+          {loading && events.length === 0 ? (
+            <Text p="5" color="fg.muted">Carregando histórico...</Text>
+          ) : events.length === 0 ? (
+            <Text p="5" color="fg.muted">Nenhum evento registrado para este tópico ainda.</Text>
+          ) : (
+            <Stack gap="0" divideY="1px" divideColor="border">
+              {events.map((event) => (
+                <Box key={event.id} p={{ base: 4, md: 5 }}>
+                  <Flex align="center" justify="space-between" gap="3" wrap="wrap" mb="3">
+                    <Text fontFamily="mono" fontSize="xs" color="fg.muted">
+                      {new Date(event.receivedAt).toLocaleString()}
+                    </Text>
+                    <Badge colorPalette={event.isSnapshot ? "blue" : "gray"}>
+                      {event.isSnapshot ? "Snapshot" : "Atualização"}
+                    </Badge>
+                  </Flex>
+                  <Box
+                    as="pre"
+                    m="0"
+                    overflowX="auto"
+                    maxH="55vh"
+                    fontFamily="mono"
+                    fontSize="xs"
+                    lineHeight="1.65"
+                    color="fg"
+                  >
+                    {JSON.stringify(event.payload, null, 2)}
+                  </Box>
+                </Box>
+              ))}
+            </Stack>
+          )}
         </Box>
       </Stack>
     </Container>
