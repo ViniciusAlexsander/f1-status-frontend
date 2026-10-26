@@ -13,6 +13,25 @@ export interface SessionStatus {
   lap: number;
   trackStatus: string;
   sessionStatus: string;
+  qualifyingPart?: number | null;
+}
+
+export interface SessionDataPayload {
+  Series?: SessionDataSeriesItem[];
+  StatusSeries?: SessionDataStatusItem[];
+  _kf?: boolean;
+}
+
+export interface SessionDataSeriesItem {
+  Utc: string;
+  Lap?: number;
+  QualifyingPart?: number;
+}
+
+export interface SessionDataStatusItem {
+  Utc: string;
+  TrackStatus?: string;
+  SessionStatus?: string;
 }
 
 export interface DriverTiming {

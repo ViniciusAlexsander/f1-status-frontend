@@ -18,7 +18,7 @@ export default function LiveTiming() {
   const { drivers } = useDriversLiveTimingData();
   const { session } = useSessionLiveTimingData();
   const { data: raceData } = useListRaces();
-  const hasLiveData = drivers.length > 0 || Boolean(session);
+  const hasLiveData = drivers.length > 0;
   const sessionName = raceData?.currentRace?.name ?? "Sessão atual";
 
   return (
@@ -64,6 +64,13 @@ export default function LiveTiming() {
                   color="fg.muted"
                   textTransform="uppercase"
                 >
+                  {session.qualifyingPart != null &&
+                    session.qualifyingPart >= 1 &&
+                    session.qualifyingPart <= 3 && (
+                      <Text color="f1.500" fontWeight="700">
+                        Q{session.qualifyingPart}
+                      </Text>
+                    )}
                   <Text color="fg">Volta {session.lap}</Text>
                   <TrackStatusDisplay status={session.trackStatus} />
                   <Text>{session.sessionStatus}</Text>
