@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { RiFlagLine, RiRadioLine } from "react-icons/ri";
 import { Link as RouterLink, NavLink } from "react-router-dom";
+import { MobileNavDrawer } from "@/components/navigation/MobileNavDrawer";
 
 type SiteHeaderProps = {
   isLive: boolean;
@@ -35,7 +36,7 @@ export function SiteHeader({
       backdropFilter="blur(14px)"
     >
       <Box h="0.5" bg={isLive ? "f1.500" : "border"} />
-      <Container maxW="1600px" py={{ base: 3, md: 4 }} px={{ base: 4, md: 6 }}>
+      <Container maxW="1600px" py={{ base: 2, md: 4 }} px={{ base: 3, md: 6 }}>
         <Flex align="center" justify="space-between" gap="3">
           <Link
             asChild
@@ -121,6 +122,10 @@ export function SiteHeader({
               </Text>
             </HStack>
 
+            <Box display={{ base: "block", md: "none" }}>
+              <MobileNavDrawer />
+            </Box>
+
             {onToggleLive && (
               <Button
                 display={{ base: "none", md: "inline-flex" }}
@@ -147,8 +152,8 @@ export function SiteHeader({
       </Container>
       <Box
         display={{ base: "block", lg: "none" }}
-        px={{ base: 4, md: 6 }}
-        pb="3"
+        px={{ base: 3, md: 6 }}
+        pb={{ base: 2, md: 3 }}
       >
         <Flex
           align="center"
@@ -167,48 +172,6 @@ export function SiteHeader({
           <Text truncate>{compactStatusLabel ?? statusLabel}</Text>
         </Flex>
 
-        <HStack
-          gap="0"
-          overflowX="auto"
-          pt="3"
-          css={{
-            scrollbarWidth: "none",
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
-        >
-          {[
-            ["Classificação", "/standings"],
-            ["Live", "/live"],
-          ].map(([label, href]) => (
-            <NavLink
-              key={href}
-              to={href}
-              end={href === "/"}
-              style={({ isActive }) => ({
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                color: isActive
-                  ? "var(--chakra-colors-fg)"
-                  : "var(--chakra-colors-fg-muted)",
-                borderBottom: isActive
-                  ? "2px solid var(--chakra-colors-f1-500)"
-                  : "2px solid transparent",
-                padding: "0.55rem 0.75rem 0.45rem",
-                marginRight: "0.35rem",
-              })}
-            >
-              <Text
-                fontFamily="mono"
-                fontSize="10px"
-                letterSpacing="0.12em"
-                textTransform="uppercase"
-              >
-                {label}
-              </Text>
-            </NavLink>
-          ))}
-        </HStack>
       </Box>
     </Box>
   );

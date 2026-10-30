@@ -1,8 +1,10 @@
 import { type SessionStatus } from "@/api/types/livetiming";
 import { useEffect, useState } from "react";
 
+type SessionStatusView = SessionStatus & { sessionTypeLabel?: string };
+
 export function useSessionLiveTimingData() {
-  const [session, setSession] = useState<SessionStatus | undefined>();
+  const [session, setSession] = useState<SessionStatusView | undefined>();
 
   useEffect(() => {
     const eventSource = new EventSource(
@@ -16,7 +18,7 @@ export function useSessionLiveTimingData() {
     const handleSessionUpdate = (event: Event) => {
       const { data } = event as MessageEvent;
 
-      const session: SessionStatus = JSON.parse(data);
+      const session: SessionStatusView = JSON.parse(data);
 
       setSession(session);
     };

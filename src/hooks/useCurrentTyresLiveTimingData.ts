@@ -1,15 +1,9 @@
-import { normalizeTyreInfo, type ICurrentTyres } from "@/api/types/livetiming";
+import {
+  normalizeTyreInfo,
+  type CurrentTyresPayload,
+  type ICurrentTyres,
+} from "@/api/types/livetiming";
 import { useEffect, useState } from "react";
-
-type ApiTyreInfo = {
-  Compound: string;
-  New: boolean;
-};
-
-type ApiCurrentTyres = {
-  Tyres: Record<string, ApiTyreInfo>;
-  _kf: boolean;
-};
 
 export function useCurrentTyresLiveTimingData() {
   const [currentTyres, setCurrentTyres] = useState<ICurrentTyres | undefined>();
@@ -28,11 +22,11 @@ export function useCurrentTyresLiveTimingData() {
 
       console.log("tyre_update", data);
 
-      const apiTyres: ApiCurrentTyres = JSON.parse(data);
+      const apiTyres: CurrentTyresPayload = JSON.parse(data);
       const currentTyres: ICurrentTyres = {
-        ...apiTyres,
+        _kf: apiTyres._kf,
         Tyres: Object.fromEntries(
-          Object.entries(apiTyres.Tyres).map(([number, tyre]) => [
+          Object.entries(apiTyres.Tyres ?? {}).map(([number, tyre]) => [
             number,
             normalizeTyreInfo(tyre),
           ]),

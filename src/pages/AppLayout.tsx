@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/dashboard/SiteHeader";
 import { SiteFooter } from "@/components/dashboard/SiteFooter";
 import { Box, Container } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 export function AppLayout() {
   const { pathname, hash } = useLocation();
@@ -46,7 +47,8 @@ export function AppLayout() {
       )}
 
       <Outlet />
-      <SiteFooter />
+      {!isLive && <SiteFooter />}
+      <Toaster />
     </Box>
   );
 }

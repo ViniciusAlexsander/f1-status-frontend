@@ -12,11 +12,17 @@ type TrackStatus = {
 
 const TRACK_STATUSES: Record<string, TrackStatus> = {
   AllClear: { label: "Pista liberada", color: "#22C55E" },
+  "1": { label: "Pista liberada", color: "#22C55E" },
   Yellow: { label: "Bandeira amarela", color: "#FACC15" },
+  "2": { label: "Bandeira amarela", color: "#FACC15" },
   Red: { label: "Bandeira vermelha", color: "#EF4444" },
+  "5": { label: "Bandeira vermelha", color: "#EF4444" },
   SCDeployed: { label: "Safety car", color: "#FACC15" },
+  "4": { label: "Safety car", color: "#FACC15" },
   VSC: { label: "Virtual safety car", color: "#A855F7" },
+  "6": { label: "Virtual safety car", color: "#A855F7" },
   VSCEnding: { label: "Virtual safety car terminando", color: "#A855F7" },
+  "7": { label: "Virtual safety car terminando", color: "#A855F7" },
 };
 
 export function TrackStatusDisplay({ status }: TrackStatusDisplayProps) {
