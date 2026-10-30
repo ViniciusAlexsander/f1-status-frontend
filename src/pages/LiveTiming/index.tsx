@@ -9,9 +9,8 @@ import { TrackStatusDisplay } from "./components/TrackStatusDisplay";
 import { TyreStintDisplay } from "./components/TyreStintDisplay";
 import { WeatherStrip } from "./components/WeatherStrip";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
-import { useRaceControlMessagesLiveTimingData } from "@/hooks/useRaceControlMessagesLiveTimingData";
+import { useLiveTimingUpdates } from "@/hooks/useLiveTimingUpdates";
 import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
-import { useWeatherLiveTimingData } from "@/hooks/useWeatherLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
 import { NextRacePanel } from "@/pages/Home/components/HomePanels";
 import {
@@ -42,23 +41,34 @@ import {
 } from "react-icons/ri";
 
 const leaderboardColumns = {
-  base: "30px minmax(124px, 1.5fr) minmax(56px, 0.8fr) minmax(54px, 0.8fr) minmax(68px, 1fr) minmax(88px, 1.15fr) minmax(52px, 0.7fr) minmax(48px, 0.65fr) minmax(82px, 1.1fr)",
-  md: "36px minmax(140px, 1.3fr) repeat(2, minmax(64px, 0.8fr)) minmax(70px, 1fr) minmax(92px, 1.15fr) minmax(78px, 1fr) 56px minmax(90px, 1.1fr)",
-  xl: "44px minmax(180px, 1.5fr) repeat(2, minmax(80px, 0.8fr)) repeat(2, minmax(90px, 1fr)) minmax(90px, 1fr) 64px minmax(110px, 1fr)",
+  base: "24px minmax(100px, 1.2fr) minmax(48px, 0.75fr) minmax(44px, 0.7fr) minmax(58px, 0.9fr) minmax(32px, 0.55fr) minmax(58px, 0.9fr) minmax(58px, 0.9fr) minmax(36px, 0.6fr)",
+  md: "36px minmax(140px, 1.3fr) repeat(2, minmax(64px, 0.8fr)) minmax(70px, 1fr) 56px minmax(90px, 1.1fr) minmax(92px, 1.15fr) minmax(78px, 1fr)",
+  xl: "44px minmax(180px, 1.5fr) repeat(2, minmax(80px, 0.8fr)) minmax(90px, 1fr) 64px minmax(110px, 1fr) repeat(2, minmax(90px, 1fr))",
 };
+const FINISHED_SESSION_GRACE_PERIOD_MS = 20 * 60 * 1000;
 
 export default function LiveTiming() {
   const { drivers } = useDriversLiveTimingData();
   const { session } = useSessionLiveTimingData();
-  const { messages, penalties, newMessageBatch } =
-    useRaceControlMessagesLiveTimingData();
-  const { weather } = useWeatherLiveTimingData();
+  const { trackStatus, weather, clock, messages, penalties, newMessageBatch } =
+    useLiveTimingUpdates();
   const { data: raceData } = useListRaces();
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
+  const hasClock = clock != null;
   const hasLiveData = drivers.length > 0;
   const sessionName = raceData?.currentRace?.name ?? "Sessão atual";
   const activeSchedule = raceData?.currentRace?.schedule.find(
     (item) => item.status === "ongoing",
+  );
+  const latestCompletedSchedule = useMemo(
+    () =>
+      raceData?.currentRace?.schedule
+        .filter((item) => item.status === "completed")
+        .sort(
+          (first, second) =>
+            Date.parse(second.endTime) - Date.parse(first.endTime),
+        )[0],
+    [raceData?.currentRace?.schedule],
   );
   const nextScheduledSession = useMemo(() => {
     const schedules = [
@@ -91,9 +101,25 @@ export default function LiveTiming() {
   const isWaitingForNextSession =
     Boolean(raceData) &&
     (!activeSchedule || session?.sessionStatus === "Finished");
+  const isSessionOver =
+    session?.sessionStatus === "Finished" ||
+    (!activeSchedule && latestCompletedSchedule != null);
+  const finishedSchedule = activeSchedule ?? latestCompletedSchedule;
+  const sessionFinishedAt = Date.parse(
+    session?.qualifyingPartFinishedAt ?? finishedSchedule?.endTime ?? "",
+  );
+  const isWithinFinishedSessionGracePeriod =
+    isSessionOver &&
+    Number.isFinite(sessionFinishedAt) &&
+    now < sessionFinishedAt + FINISHED_SESSION_GRACE_PERIOD_MS;
+  const finishedSessionGraceEndsAt =
+    isSessionOver && Number.isFinite(sessionFinishedAt)
+      ? sessionFinishedAt + FINISHED_SESSION_GRACE_PERIOD_MS
+      : undefined;
   const [unreadMessages, setUnreadMessages] = useState(0);
   const historyRef = useRef<HTMLDivElement>(null);
   const notifiedMessageIdsRef = useRef(new Set<string>());
+  const sessionStartReloadTimeoutRef = useRef<number | null>(null);
 
   const penaltiesByDriver = useMemo(() => {
     const result = new Map<string, DriverPenalty[]>();
@@ -143,13 +169,23 @@ export default function LiveTiming() {
   useEffect(() => {
     const hasActiveQualifyingTimer = Boolean(
       session?.qualifyingPartStartedAt &&
-        session.qualifyingPart &&
-        !session.qualifyingPartFinishedAt &&
-        session.sessionStatus !== "Finished",
+      session.qualifyingPart &&
+      !session.qualifyingPartFinishedAt &&
+      session.sessionStatus !== "Finished",
+    );
+    const hasActivePracticeTimer = Boolean(
+      activeSchedule?.type === "practice" && hasClock,
     );
     const shouldUpdateCountdown =
-      isWaitingForNextSession && Boolean(nextScheduledSession);
-    if (!hasActiveQualifyingTimer && !shouldUpdateCountdown) return;
+      isWaitingForNextSession &&
+      (Boolean(nextScheduledSession) || isWithinFinishedSessionGracePeriod);
+    if (
+      !hasActiveQualifyingTimer &&
+      !hasActivePracticeTimer &&
+      !shouldUpdateCountdown
+    ) {
+      return;
+    }
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, [
@@ -157,9 +193,56 @@ export default function LiveTiming() {
     session?.qualifyingPartStartedAt,
     session?.qualifyingPartFinishedAt,
     session?.sessionStatus,
+    activeSchedule?.type,
+    hasClock,
     nextScheduledSession,
     isWaitingForNextSession,
+    isWithinFinishedSessionGracePeriod,
   ]);
+
+  useEffect(() => {
+    if (
+      !isWaitingForNextSession ||
+      finishedSessionGraceEndsAt == null ||
+      finishedSessionGraceEndsAt <= Date.now()
+    ) {
+      return;
+    }
+
+    const reloadTimeout = window.setTimeout(
+      () => window.location.reload(),
+      finishedSessionGraceEndsAt - Date.now(),
+    );
+    return () => window.clearTimeout(reloadTimeout);
+  }, [finishedSessionGraceEndsAt, isWaitingForNextSession]);
+
+  useEffect(() => {
+    if (
+      !isWaitingForNextSession ||
+      !nextScheduledSession ||
+      sessionStartReloadTimeoutRef.current !== null
+    ) {
+      return;
+    }
+
+    const sessionStartAt = Date.parse(nextScheduledSession.startTime);
+    if (!Number.isFinite(sessionStartAt)) return;
+
+    sessionStartReloadTimeoutRef.current = window.setTimeout(
+      () => window.location.reload(),
+      Math.max(0, sessionStartAt - Date.now()),
+    );
+  }, [isWaitingForNextSession, nextScheduledSession]);
+
+  useEffect(
+    () => () => {
+      if (sessionStartReloadTimeoutRef.current !== null) {
+        window.clearTimeout(sessionStartReloadTimeoutRef.current);
+        sessionStartReloadTimeoutRef.current = null;
+      }
+    },
+    [],
+  );
 
   const qualifyingRemaining = session?.qualifyingPart
     ? getQualifyingRemainingSeconds(
@@ -170,13 +253,24 @@ export default function LiveTiming() {
         now,
       )
     : undefined;
+  const practiceRemaining =
+    activeSchedule?.type === "practice" && clock
+      ? Math.max(
+          0,
+          clock.remainingSeconds - Math.floor((now - clock.receivedAt) / 1000),
+        )
+      : undefined;
+  const showNextSessionBanner =
+    isWaitingForNextSession &&
+    Boolean(raceData) &&
+    !isWithinFinishedSessionGracePeriod;
 
   const openHistory = () => {
     historyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setUnreadMessages(0);
   };
 
-  if (isWaitingForNextSession && raceData) {
+  if (showNextSessionBanner && raceData) {
     return (
       <Flex
         w="full"
@@ -302,7 +396,7 @@ export default function LiveTiming() {
               >
                 <RiRadioLine /> {hasLiveData ? "AO VIVO" : "AGUARDANDO SINAL"}
               </Badge>
-              {session?.trackStatus && (
+              {(trackStatus ?? session?.trackStatus) && (
                 <Box
                   borderWidth="1px"
                   borderColor="border"
@@ -311,7 +405,9 @@ export default function LiveTiming() {
                   py={{ base: 1, md: 1.5 }}
                   fontSize={{ base: "10px", md: "xs" }}
                 >
-                  <TrackStatusDisplay status={session.trackStatus} />
+                  <TrackStatusDisplay
+                    status={trackStatus ?? session?.trackStatus ?? ""}
+                  />
                 </Box>
               )}
               {session?.qualifyingPart != null &&
@@ -333,6 +429,19 @@ export default function LiveTiming() {
                         : ""}
                   </Badge>
                 )}
+              {practiceRemaining != null && (
+                <Badge
+                  colorPalette="cyan"
+                  variant="subtle"
+                  px={{ base: 2, md: 3 }}
+                  py={{ base: 1, md: 1.5 }}
+                  borderRadius="full"
+                  fontSize={{ base: "9px", md: "xs" }}
+                  aria-label="Tempo restante do treino"
+                >
+                  <RiTimeLine /> {formatRemainingTime(practiceRemaining)}
+                </Badge>
+              )}
               {session && (
                 <Badge
                   colorPalette="gray"
@@ -389,16 +498,16 @@ export default function LiveTiming() {
               }}
             >
               <Box
-                minW={{ base: "650px", md: "750px", xl: "0" }}
+                minW={{ base: "500px", md: "750px", xl: "0" }}
                 w={{
-                  base: "max(100%, 650px)",
+                  base: "max(100%, 500px)",
                   md: "max(100%, 750px)",
                   xl: "full",
                 }}
               >
                 <Grid
                   templateColumns={leaderboardColumns}
-                  gap={{ base: 1, xl: 2 }}
+                  gap={{ base: 0.5, md: 1, xl: 2 }}
                   alignItems="center"
                   position="sticky"
                   top="0"
@@ -433,16 +542,16 @@ export default function LiveTiming() {
                       Últ.
                     </Text>
                   </Text>
-                  <Text textAlign="right">Melhor</Text>
-                  <Text textAlign="center">Laps</Text>
                   <Text textAlign="center">Pits</Text>
                   <Text textAlign="center">Pneu/Stint</Text>
+                  <Text textAlign="right">Melhor</Text>
+                  <Text textAlign="center">Laps</Text>
                 </Grid>
                 {drivers.map((driver, index) => (
                   <Grid
                     key={driver.id}
                     templateColumns={leaderboardColumns}
-                    gap={{ base: 1, xl: 2 }}
+                    gap={{ base: 0.5, md: 1, xl: 2 }}
                     alignItems="center"
                     minH={{ base: "42px", md: "56px" }}
                     px={{ base: 1, md: 3 }}
@@ -465,7 +574,9 @@ export default function LiveTiming() {
                         flexShrink="0"
                         bg={driver.driverData?.teams[0]?.color}
                         color={driver.driverData?.teams[0]?.textColor}
-                        minW="9"
+                        minW={{ base: "7", md: "9" }}
+                        px={{ base: 1, md: 2 }}
+                        fontSize={{ base: "10px", md: "xs" }}
                       >
                         {driver.driverData?.code ?? driver.RacingNumber}
                       </Badge>
@@ -499,9 +610,11 @@ export default function LiveTiming() {
                         }
                       />
                     </Flex>
-                    <Cell align="right">
-                      {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
-                    </Cell>
+                    <Box minW="0">
+                      <Cell align="right">
+                        {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
+                      </Cell>
+                    </Box>
                     <Cell align="right">
                       {driver.IntervalToPositionAhead?.Value ??
                         driver.TimeDiffToPositionAhead ??
@@ -517,6 +630,12 @@ export default function LiveTiming() {
                     >
                       {driver.LastLapTime?.Value ?? "—"}
                     </Cell>
+                    <Cell align="center">
+                      <PitStopsDisplay driver={driver} />
+                    </Cell>
+                    <Cell align="center">
+                      <TyreStintDisplay driver={driver} />
+                    </Cell>
                     <Cell
                       align="right"
                       color={driver.isFastestLap ? "fastest" : "fg"}
@@ -524,12 +643,6 @@ export default function LiveTiming() {
                       {driver.BestLapTime?.Value ?? "—"}
                     </Cell>
                     <Cell align="center">{driver.NumberOfLaps ?? "—"}</Cell>
-                    <Cell align="center">
-                      <PitStopsDisplay driver={driver} />
-                    </Cell>
-                    <Cell align="center">
-                      <TyreStintDisplay driver={driver} />
-                    </Cell>
                   </Grid>
                 ))}
               </Box>
@@ -616,4 +729,3 @@ function getSessionTypeLabel(type: ScheduleType): string {
   };
   return labels[type];
 }
-

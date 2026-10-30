@@ -1,4 +1,5 @@
 import { getTeamLogo } from "@/api/teamLogos";
+import { Image } from "@chakra-ui/react";
 
 type TeamLogoProps = {
   teamName?: string;
@@ -9,15 +10,13 @@ export function TeamLogo({ teamName }: TeamLogoProps) {
   if (!logo) return null;
 
   return (
-    <img
+    <Image
       src={logo}
       alt={`${teamName} logo`}
-      style={{
-        width: "36px",
-        height: "32px",
-        objectFit: "contain",
-        flexShrink: 0,
-      }}
+      width={{ base: "28px", md: "36px" }}
+      height={{ base: "25px", md: "32px" }}
+      objectFit="contain"
+      flexShrink="0"
     />
   );
 }

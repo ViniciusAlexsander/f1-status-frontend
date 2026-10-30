@@ -47,7 +47,7 @@ export function AppLayout() {
       )}
 
       <Outlet />
-      {!isLive && <SiteFooter />}
+      <SiteFooter />
       <Toaster />
     </Box>
   );

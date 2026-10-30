@@ -14,9 +14,7 @@ import { RiArrowRightLine, RiCalendarLine, RiRadioLine } from "react-icons/ri";
 import type { RaceWeek, Schedule } from "@/api/types/race";
 import { useSessionResults } from "@/hooks/useSessionResults";
 import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
-import {
-  getEventStatusPalette,
-} from "@/utils/eventStatus";
+import { getEventStatusPalette } from "@/utils/eventStatus";
 import { getNextScheduledSession } from "./homeUtils";
 
 type PanelProps = { children: React.ReactNode; visible: boolean };
@@ -98,7 +96,7 @@ export function SectionTitle({
 }
 
 function Countdown({ race }: { race: RaceWeek }) {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
@@ -232,7 +230,10 @@ export function NextRacePanel({
                   ? "Etapa em andamento"
                   : "Próxima etapa"}
               </Text>
-              <Badge colorPalette={getEventStatusPalette(race.status)} variant="subtle">
+              <Badge
+                colorPalette={getEventStatusPalette(race.status)}
+                variant="subtle"
+              >
                 {race.statusLabel}
               </Badge>
               {focusedSession && (
@@ -267,12 +268,7 @@ export function NextRacePanel({
               <RouterLink to={`/meetings/${race.id}`}>Ver detalhes</RouterLink>
             </Button>
             {focusedSession?.status === "ongoing" && (
-              <Button
-                asChild
-                size="sm"
-                colorPalette="f1"
-                alignSelf="start"
-              >
+              <Button asChild size="sm" colorPalette="f1" alignSelf="start">
                 <RouterLink to="/live">
                   <RiRadioLine /> Live Timing
                 </RouterLink>
@@ -412,25 +408,25 @@ export function ResultsPanel({ races }: { races: RaceWeek[] }) {
             <Box key={race.id} px={{ base: 4, md: 5 }} py="3.5">
               <Flex align="flex-start" justify="space-between" gap="3">
                 <Box minW="0">
-                <Text
-                  fontFamily="mono"
-                  fontSize="10px"
-                  letterSpacing="0.12em"
-                  color="fg.muted"
-                  textTransform="uppercase"
-                >
-                  {formatDateWithoutTime(race.dateStart)}
-                </Text>
-                <RouterLink to={`/meetings/${race.id}`}>
                   <Text
-                    mt="1"
-                    fontSize="sm"
-                    fontWeight="500"
-                    _hover={{ color: "f1.500" }}
+                    fontFamily="mono"
+                    fontSize="10px"
+                    letterSpacing="0.12em"
+                    color="fg.muted"
+                    textTransform="uppercase"
                   >
-                    {race.name}
+                    {formatDateWithoutTime(race.dateStart)}
                   </Text>
-                </RouterLink>
+                  <RouterLink to={`/meetings/${race.id}`}>
+                    <Text
+                      mt="1"
+                      fontSize="sm"
+                      fontWeight="500"
+                      _hover={{ color: "f1.500" }}
+                    >
+                      {race.name}
+                    </Text>
+                  </RouterLink>
                 </Box>
                 <Badge
                   flexShrink="0"

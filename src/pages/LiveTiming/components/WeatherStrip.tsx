@@ -29,20 +29,46 @@ export function WeatherStrip({ weather }: WeatherStripProps) {
       w="full"
       aria-label="Condições da pista"
     >
-      <WeatherValue icon={<RiTempHotLine color="#F97316" />} label="Ar" value={value(weather.AirTemp, " °C")} />
-      <WeatherValue icon={<TrackIcon style={{ color: "#F97316" }} />} label="Pista" value={value(weather.TrackTemp, " °C")} />
       <WeatherValue
-        icon={weather.Rainfall && weather.Rainfall > 0 ? <RiRainyLine color="#3B82F6" /> : <RiSunLine color="#FACC15" />}
+        icon={<RiTempHotLine color="#F97316" />}
+        label="Ar"
+        value={value(weather.AirTemp, " °C")}
+      />
+      <WeatherValue
+        icon={<TrackIcon style={{ color: "#F97316" }} />}
+        label="Pista"
+        value={value(weather.TrackTemp, " °C")}
+      />
+      <WeatherValue
+        icon={
+          weather.Rainfall && weather.Rainfall > 0 ? (
+            <RiRainyLine color="#3B82F6" />
+          ) : (
+            <RiSunLine color="#FACC15" />
+          )
+        }
         label="Chuva"
         value={value(weather.Rainfall, " mm")}
       />
-      <WeatherValue icon={<RiDropLine color="#3B82F6" />} label="Humidade" value={value(weather.Humidity, "%")} />
+      <WeatherValue
+        icon={<RiDropLine color="#3B82F6" />}
+        label="Umidade"
+        value={value(weather.Humidity, "%")}
+      />
       <WeatherValue
         icon={<RiWindyLine color="#CBD5E1" />}
         label="Vento"
-        value={weather.WindSpeed == null ? "—" : `${weather.WindSpeed} m/s${weather.WindDirection == null ? "" : ` · ${weather.WindDirection}°`}`}
+        value={
+          weather.WindSpeed == null
+            ? "—"
+            : `${weather.WindSpeed} m/s${weather.WindDirection == null ? "" : ` · ${weather.WindDirection}°`}`
+        }
       />
-      <WeatherValue icon={<RiDashboardLine color="#A855F7" />} label="Pressão" value={value(weather.Pressure, " hPa")} />
+      <WeatherValue
+        icon={<RiDashboardLine color="#A855F7" />}
+        label="Pressão"
+        value={value(weather.Pressure, " hPa")}
+      />
     </SimpleGrid>
   );
   return metrics;
@@ -71,12 +97,26 @@ function WeatherValue({
       py={{ base: 1, md: 1.5 }}
     >
       <Flex align="center" gap="1" color="fg.muted">
-        <Box fontSize="sm" aria-hidden="true">{icon}</Box>
-        <Text fontFamily="mono" fontSize="9px" letterSpacing="0.04em" textTransform="uppercase" truncate>
+        <Box fontSize="sm" aria-hidden="true">
+          {icon}
+        </Box>
+        <Text
+          fontFamily="mono"
+          fontSize="9px"
+          letterSpacing="0.04em"
+          textTransform="uppercase"
+          truncate
+        >
           {label}
         </Text>
       </Flex>
-      <Text fontFamily="mono" fontSize={{ base: "xs", md: "sm" }} fontWeight="600" fontVariantNumeric="tabular-nums" truncate>
+      <Text
+        fontFamily="mono"
+        fontSize={{ base: "xs", md: "sm" }}
+        fontWeight="600"
+        fontVariantNumeric="tabular-nums"
+        truncate
+      >
         {value}
       </Text>
     </Flex>

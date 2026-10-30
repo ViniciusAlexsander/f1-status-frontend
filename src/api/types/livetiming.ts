@@ -106,6 +106,11 @@ export interface WeatherDataPayload {
   _kf?: boolean;
 }
 
+export interface ExtrapolatedClockState {
+  remainingSeconds: number;
+  receivedAt: number;
+}
+
 export interface DriverTiming {
   TimeDiffToFastest?: string;
   TimeDiffToPositionAhead?: string;
@@ -227,11 +232,14 @@ export function timingToArray(
   const validBestLaps = driversPosition
     .map((driver) => parseLapTime(driver.BestLapTime?.Value))
     .filter((time): time is number => time !== undefined);
-  const fastestLap = validBestLaps.length ? Math.min(...validBestLaps) : undefined;
+  const fastestLap = validBestLaps.length
+    ? Math.min(...validBestLaps)
+    : undefined;
 
   if (fastestLap !== undefined) {
     driversPosition.forEach((driver) => {
-      driver.isFastestLap = parseLapTime(driver.BestLapTime?.Value) === fastestLap;
+      driver.isFastestLap =
+        parseLapTime(driver.BestLapTime?.Value) === fastestLap;
     });
   }
 
@@ -268,9 +276,7 @@ const TYRE_COMPOUNDS: Record<string, TyreCompound> = {
   wet: { label: "WET", abbreviation: "W", color: "#0067FF" },
 };
 
-export function normalizeTyreInfo(
-  tyre: CurrentTyrePayload,
-): TyreInfo {
+export function normalizeTyreInfo(tyre: CurrentTyrePayload): TyreInfo {
   const compound = tyre.Compound.trim().toLowerCase();
 
   return {
