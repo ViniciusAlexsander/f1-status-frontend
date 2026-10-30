@@ -93,12 +93,14 @@ export function deriveDriverPenalties(
   return penalties;
 }
 
-export enum DriverStatus {
-  In = "IN",
-  Out = "OUT",
-  Stopped = "STOP",
-  Retired = "RET",
-}
+export const DriverStatus = {
+  In: "IN",
+  Out: "OUT",
+  Stopped: "STOP",
+  Retired: "RET",
+} as const;
+
+export type DriverStatus = (typeof DriverStatus)[keyof typeof DriverStatus];
 
 export function getDriverStatus(driver: {
   Retired?: boolean;

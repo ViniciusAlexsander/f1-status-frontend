@@ -53,13 +53,13 @@ export default function LiveTiming() {
     useRaceControlMessagesLiveTimingData();
   const { weather } = useWeatherLiveTimingData();
   const { data: raceData } = useListRaces();
+  const [now, setNow] = useState(Date.now());
   const hasLiveData = drivers.length > 0;
   const sessionName = raceData?.currentRace?.name ?? "Sessão atual";
   const activeSchedule = raceData?.currentRace?.schedule.find(
     (item) => item.status === "ongoing",
   );
   const nextScheduledSession = useMemo(() => {
-    const now = Date.now();
     const schedules = [
       ...(raceData?.currentRace?.schedule ?? []),
       ...(raceData?.nextRace?.schedule ?? []),
@@ -73,7 +73,7 @@ export default function LiveTiming() {
         (first, second) =>
           Date.parse(first.startTime) - Date.parse(second.startTime),
       )[0];
-  }, [raceData]);
+  }, [raceData, now]);
   const sessionTypeLabel =
     session?.sessionTypeLabel ??
     (activeSchedule
@@ -81,7 +81,9 @@ export default function LiveTiming() {
       : session?.qualifyingPart
         ? "Classificação"
         : "Live Timing");
-  const [now, setNow] = useState(Date.now());
+  const isWaitingForNextSession =
+    Boolean(raceData) &&
+    (!activeSchedule || session?.sessionStatus === "Finished");
   const [unreadMessages, setUnreadMessages] = useState(0);
   const historyRef = useRef<HTMLDivElement>(null);
   const notifiedMessageIdsRef = useRef(new Set<string>());
@@ -132,12 +134,15 @@ export default function LiveTiming() {
   }, [unreadMessages]);
 
   useEffect(() => {
-    const hasActiveQualifyingTimer =
-      !session?.qualifyingPartStartedAt ||
-      !session.qualifyingPart ||
-      session.qualifyingPartFinishedAt ||
-      session.sessionStatus === "Finished";
-    if (hasActiveQualifyingTimer && !nextScheduledSession) return;
+    const hasActiveQualifyingTimer = Boolean(
+      session?.qualifyingPartStartedAt &&
+        session.qualifyingPart &&
+        !session.qualifyingPartFinishedAt &&
+        session.sessionStatus !== "Finished",
+    );
+    const shouldUpdateCountdown =
+      isWaitingForNextSession && Boolean(nextScheduledSession);
+    if (!hasActiveQualifyingTimer && !shouldUpdateCountdown) return;
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, [
@@ -146,6 +151,7 @@ export default function LiveTiming() {
     session?.qualifyingPartFinishedAt,
     session?.sessionStatus,
     nextScheduledSession,
+    isWaitingForNextSession,
   ]);
 
   const qualifyingRemaining = session?.qualifyingPart
@@ -162,6 +168,57 @@ export default function LiveTiming() {
     historyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setUnreadMessages(0);
   };
+
+  if (isWaitingForNextSession && raceData) {
+    return (
+      <Flex
+        w="full"
+        minH="calc(100dvh - 72px)"
+        align="center"
+        justify="center"
+        px={{ base: 3, md: 8 }}
+        py={{ base: 6, md: 12 }}
+      >
+        <Box
+          w="full"
+          maxW="1000px"
+          borderWidth="1px"
+          borderColor="border"
+          borderRadius="xl"
+          bg="card"
+          textAlign="center"
+          px={{ base: 5, md: 10 }}
+          py={{ base: 10, md: 16 }}
+        >
+          {nextScheduledSession ? (
+            <NextSessionCountdown
+              schedule={nextScheduledSession}
+              raceName={raceData.currentRace?.name ?? raceData.nextRace?.name}
+              now={now}
+            />
+          ) : (
+            <>
+              <Text
+                fontFamily="mono"
+                fontSize="10px"
+                color="fg.muted"
+                letterSpacing="0.14em"
+                textTransform="uppercase"
+              >
+                Live Timing
+              </Text>
+              <Heading mt="2" size={{ base: "lg", md: "2xl" }}>
+                Nenhuma sessao programada
+              </Heading>
+              <Text mt="2" color="fg.muted">
+                A proxima sessao ainda nao esta disponivel.
+              </Text>
+            </>
+          )}
+        </Box>
+      </Flex>
+    );
+  }
 
   return (
     <Box w="full" minH="calc(100dvh - 72px)" overflowX="clip">
@@ -526,6 +583,77 @@ export default function LiveTiming() {
   );
 }
 
+function NextSessionCountdown({
+  schedule,
+  raceName,
+  now,
+}: {
+  schedule: Schedule;
+  raceName?: string;
+  now: number;
+}) {
+  const remaining = Math.max(
+    0,
+    Math.floor((Date.parse(schedule.startTime) - now) / 1000),
+  );
+  const parts = [
+    [Math.floor(remaining / 86_400), "dias"],
+    [Math.floor((remaining % 86_400) / 3_600), "horas"],
+    [Math.floor((remaining % 3_600) / 60), "min"],
+    [remaining % 60, "seg"],
+  ] as const;
+
+  return (
+    <>
+      <Text
+        fontFamily="mono"
+        fontSize="10px"
+        color="fg.muted"
+        letterSpacing="0.14em"
+        textTransform="uppercase"
+      >
+        Proxima sessao
+      </Text>
+      <Heading mt="2" size={{ base: "lg", md: "2xl" }}>
+        {schedule.name}
+      </Heading>
+      <Text mt="1" color="fg.muted" fontSize="sm">
+        {[raceName, getSessionTypeLabel(schedule.type)]
+          .filter(Boolean)
+          .join(" · ")}
+      </Text>
+      <Flex justify="center" gap={{ base: 4, md: 8 }} mt={{ base: 7, md: 10 }}>
+        {parts.map(([value, label]) => (
+          <Box key={label} minW={{ base: "48px", md: "80px" }}>
+            <Text
+              fontFamily="mono"
+              fontSize={{ base: "2xl", md: "5xl" }}
+              lineHeight="1"
+              fontWeight="600"
+              fontVariantNumeric="tabular-nums"
+            >
+              {String(value).padStart(2, "0")}
+            </Text>
+            <Text
+              mt="2"
+              color="fg.muted"
+              fontFamily="mono"
+              fontSize="10px"
+              letterSpacing="0.1em"
+              textTransform="uppercase"
+            >
+              {label}
+            </Text>
+          </Box>
+        ))}
+      </Flex>
+      <Text mt="7" color="fg.muted" fontSize="xs">
+        Inicio: {new Date(schedule.startTime).toLocaleString()}
+      </Text>
+    </>
+  );
+}
+
 function Cell({
   children,
   align = "left",
@@ -578,4 +706,20 @@ function getSessionTypeLabel(type: ScheduleType): string {
     sprint_qualifying: "Classificação Sprint",
   };
   return labels[type];
+}
+
+function formatCountdown(schedule: Schedule, now: number): string {
+  const remaining = Math.max(
+    0,
+    Math.floor((Date.parse(schedule.startTime) - now) / 1000),
+  );
+  const days = Math.floor(remaining / 86_400);
+  const hours = Math.floor((remaining % 86_400) / 3_600);
+  const minutes = Math.floor((remaining % 3_600) / 60);
+  const seconds = remaining % 60;
+  const time = [hours, minutes, seconds]
+    .map((value) => String(value).padStart(2, "0"))
+    .join(":");
+
+  return days > 0 ? `${days}d ${time}` : time;
 }
