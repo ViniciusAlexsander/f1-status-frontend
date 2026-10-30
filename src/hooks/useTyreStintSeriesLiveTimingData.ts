@@ -2,7 +2,9 @@ import type { TyreStint, TyreStintSeriesPayload } from "@/api/types/livetiming";
 import { useEffect, useState } from "react";
 
 export function useTyreStintSeriesLiveTimingData() {
-  const [stints, setStints] = useState<Record<string, TyreStint[]>>({});
+  const [stints, setStints] = useState<
+    Record<string, Record<string, TyreStint>>
+  >({});
 
   useEffect(() => {
     const eventSource = new EventSource(

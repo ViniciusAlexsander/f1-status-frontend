@@ -53,7 +53,7 @@ export interface CurrentTyrePayload {
 }
 
 export interface TyreStintSeriesPayload {
-  Stints?: Record<string, TyreStint[]>;
+  Stints?: Record<string, Record<string, TyreStint>>;
   _kf?: boolean;
 }
 
@@ -188,7 +188,7 @@ export function timingToArray(
   timing: TimingUpdate,
   driversStandings: DriverData[],
   tyres?: Record<string, TyreInfo>,
-  stints?: Record<string, TyreStint[]>,
+  stints?: Record<string, Record<string, TyreStint>>,
 ): DriverTimingItem[] {
   const driversPosition: DriverTimingItem[] = Object.entries(
     timing.payload.Lines,
@@ -196,6 +196,7 @@ export function timingToArray(
     .map(([id, driver]) => ({
       id,
       ...driver,
+      RacingNumber: driver.RacingNumber ?? id,
       isFastestLap: false,
     }))
     .sort(
@@ -214,7 +215,10 @@ export function timingToArray(
     }
 
     if (driver.RacingNumber && stints) {
-      driver.currentStint = stints[driver.RacingNumber]?.at(-1);
+      const driverStints = stints[driver.RacingNumber];
+      driver.currentStint = driverStints
+        ? Object.values(driverStints).at(-1)
+        : undefined;
       const stintLaps = Number(driver.currentStint?.TotalLaps);
       if (Number.isFinite(stintLaps)) driver.currentStintLaps = stintLaps;
     }
