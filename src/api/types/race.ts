@@ -16,7 +16,7 @@ export interface Location {
   country: Country;
 }
 
-export interface Schedule {
+export interface ApiSchedule {
   id: string;
   name: string;
   type: ScheduleType;
@@ -25,7 +25,11 @@ export interface Schedule {
   status: EventStatus;
 }
 
-export interface RaceWeek {
+export interface Schedule extends ApiSchedule {
+  statusLabel: string;
+}
+
+export interface ApiRaceWeek {
   id: string;
   name: string;
   dateStart: string;
@@ -33,6 +37,11 @@ export interface RaceWeek {
   status: EventStatus;
   location: Location;
   sportId: string;
+  schedule: ApiSchedule[];
+}
+
+export interface RaceWeek extends Omit<ApiRaceWeek, "schedule"> {
+  statusLabel: string;
   schedule: Schedule[];
 }
 
@@ -43,6 +52,12 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
+export interface ApiRaceListData {
+  races: ApiRaceWeek[];
+  nextRace: ApiRaceWeek | null;
+  currentRace: ApiRaceWeek | null;
+}
+
 export interface RaceListData {
   races: RaceWeek[];
   nextRace: RaceWeek | null;
@@ -50,6 +65,6 @@ export interface RaceListData {
 }
 
 export interface RaceListResponse {
-  data: RaceListData;
+  data: ApiRaceListData;
   meta: PaginationMeta;
 }

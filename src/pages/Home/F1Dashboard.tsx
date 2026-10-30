@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Box, Container, Grid, Spinner, Stack, Text } from "@chakra-ui/react";
 import type { RaceListData } from "@/api/types/race";
 import { useListRaces } from "@/hooks/useListRaces";
-import { formatDateCompact, formatDateWithoutTime } from "@/utils/date";
+import { formatDateCompact } from "@/utils/date";
 import { SiteHeader } from "@/components/dashboard/SiteHeader";
 import { StandingsPanel } from "@/components/dashboard/StandingsPanel";
 import {
@@ -16,7 +15,6 @@ import { getFocusedSession } from "./components/homeUtils";
 
 export default function F1Dashboard() {
   const { data, isLoading, isError, error } = useListRaces();
-  const [liveMode, setLiveMode] = useState(false);
   const raceData = data as RaceListData | undefined;
   const finished =
     raceData?.races.filter((race) => race.status === "completed") ?? [];
@@ -44,11 +42,8 @@ export default function F1Dashboard() {
 
   const activeRace = raceData.currentRace ?? raceData.nextRace;
   const focusedSession = activeRace ? getFocusedSession(activeRace) : undefined;
-  const statusLabel = liveMode
-    ? "Corrida em andamento"
-    : raceData.nextRace
-      ? `Largada em ${formatDateWithoutTime(raceData.nextRace.dateStart)}`
-      : "Temporada";
+  const liveMode = focusedSession?.status === "ongoing";
+  const statusLabel = liveMode ? "Sessao em andamento" : "Fora do ar";
 
   return (
     <Box minH="100dvh">
@@ -62,7 +57,6 @@ export default function F1Dashboard() {
               ? `Largada em ${formatDateCompact(raceData.nextRace.dateStart)}`
               : "Temporada"
         }
-        onToggleLive={() => setLiveMode((value) => !value)}
       />
       <Container maxW="1600px" px={{ base: 4, md: 6 }} pb="10">
         <Grid

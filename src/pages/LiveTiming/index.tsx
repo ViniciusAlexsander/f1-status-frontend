@@ -13,12 +13,13 @@ import { useRaceControlMessagesLiveTimingData } from "@/hooks/useRaceControlMess
 import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import { useWeatherLiveTimingData } from "@/hooks/useWeatherLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
+import { NextRacePanel } from "@/pages/Home/components/HomePanels";
 import {
   formatRemainingTime,
   getQualifyingRemainingSeconds,
 } from "@/api/liveTimingFeatures";
 import type { DriverPenalty } from "@/api/types/livetiming";
-import type { Schedule, ScheduleType } from "@/api/types/race";
+import type { ScheduleType } from "@/api/types/race";
 import { toaster } from "@/components/ui/toaster";
 import {
   Badge,
@@ -74,6 +75,12 @@ export default function LiveTiming() {
           Date.parse(first.startTime) - Date.parse(second.startTime),
       )[0];
   }, [raceData, now]);
+  const nextSessionRace = [raceData?.currentRace, raceData?.nextRace].find(
+    (race) =>
+      race?.schedule.some(
+        (scheduled) => scheduled.id === nextScheduledSession?.id,
+      ),
+  );
   const sessionTypeLabel =
     session?.sessionTypeLabel ??
     (activeSchedule
@@ -179,25 +186,23 @@ export default function LiveTiming() {
         px={{ base: 3, md: 8 }}
         py={{ base: 6, md: 12 }}
       >
-        <Box
-          w="full"
-          maxW="1000px"
-          borderWidth="1px"
-          borderColor="border"
-          borderRadius="xl"
-          bg="card"
-          textAlign="center"
-          px={{ base: 5, md: 10 }}
-          py={{ base: 10, md: 16 }}
-        >
-          {nextScheduledSession ? (
-            <NextSessionCountdown
-              schedule={nextScheduledSession}
-              raceName={raceData.currentRace?.name ?? raceData.nextRace?.name}
-              now={now}
+        <Box w="full" maxW="1100px">
+          {nextScheduledSession && nextSessionRace ? (
+            <NextRacePanel
+              race={nextSessionRace}
+              focusedSession={nextScheduledSession}
             />
           ) : (
-            <>
+            <Box
+              borderWidth="1px"
+              borderColor="border"
+              borderLeftWidth="4px"
+              borderLeftColor="f1.500"
+              bg="card"
+              backgroundImage="repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 8px)"
+              px={{ base: 4, md: 7 }}
+              py={{ base: 5, md: 7 }}
+            >
               <Text
                 fontFamily="mono"
                 fontSize="10px"
@@ -213,7 +218,7 @@ export default function LiveTiming() {
               <Text mt="2" color="fg.muted">
                 A proxima sessao ainda nao esta disponivel.
               </Text>
-            </>
+            </Box>
           )}
         </Box>
       </Flex>
@@ -338,31 +343,6 @@ export default function LiveTiming() {
                   fontSize={{ base: "9px", md: "xs" }}
                 >
                   <RiFlagLine /> VOLTA {session.lap}
-                </Badge>
-              )}
-              {!activeSchedule && nextScheduledSession && (
-                <Badge
-                  colorPalette="blue"
-                  variant="subtle"
-                  px={{ base: 2, md: 3 }}
-                  py={{ base: 1, md: 1.5 }}
-                  borderRadius="full"
-                  fontSize={{ base: "9px", md: "xs" }}
-                  title={`${nextScheduledSession.name} · ${new Date(nextScheduledSession.startTime).toLocaleString()}`}
-                >
-                  <RiTimeLine /> {getSessionTypeLabel(nextScheduledSession.type)} · {formatCountdown(nextScheduledSession, now)}
-                </Badge>
-              )}
-              {raceData && !activeSchedule && !nextScheduledSession && (
-                <Badge
-                  colorPalette="gray"
-                  variant="subtle"
-                  px={{ base: 2, md: 3 }}
-                  py={{ base: 1, md: 1.5 }}
-                  borderRadius="full"
-                  fontSize={{ base: "9px", md: "xs" }}
-                >
-                  PrÃ³xima sessÃ£o indisponÃ­vel
                 </Badge>
               )}
             </Flex>
@@ -583,77 +563,6 @@ export default function LiveTiming() {
   );
 }
 
-function NextSessionCountdown({
-  schedule,
-  raceName,
-  now,
-}: {
-  schedule: Schedule;
-  raceName?: string;
-  now: number;
-}) {
-  const remaining = Math.max(
-    0,
-    Math.floor((Date.parse(schedule.startTime) - now) / 1000),
-  );
-  const parts = [
-    [Math.floor(remaining / 86_400), "dias"],
-    [Math.floor((remaining % 86_400) / 3_600), "horas"],
-    [Math.floor((remaining % 3_600) / 60), "min"],
-    [remaining % 60, "seg"],
-  ] as const;
-
-  return (
-    <>
-      <Text
-        fontFamily="mono"
-        fontSize="10px"
-        color="fg.muted"
-        letterSpacing="0.14em"
-        textTransform="uppercase"
-      >
-        Proxima sessao
-      </Text>
-      <Heading mt="2" size={{ base: "lg", md: "2xl" }}>
-        {schedule.name}
-      </Heading>
-      <Text mt="1" color="fg.muted" fontSize="sm">
-        {[raceName, getSessionTypeLabel(schedule.type)]
-          .filter(Boolean)
-          .join(" · ")}
-      </Text>
-      <Flex justify="center" gap={{ base: 4, md: 8 }} mt={{ base: 7, md: 10 }}>
-        {parts.map(([value, label]) => (
-          <Box key={label} minW={{ base: "48px", md: "80px" }}>
-            <Text
-              fontFamily="mono"
-              fontSize={{ base: "2xl", md: "5xl" }}
-              lineHeight="1"
-              fontWeight="600"
-              fontVariantNumeric="tabular-nums"
-            >
-              {String(value).padStart(2, "0")}
-            </Text>
-            <Text
-              mt="2"
-              color="fg.muted"
-              fontFamily="mono"
-              fontSize="10px"
-              letterSpacing="0.1em"
-              textTransform="uppercase"
-            >
-              {label}
-            </Text>
-          </Box>
-        ))}
-      </Flex>
-      <Text mt="7" color="fg.muted" fontSize="xs">
-        Inicio: {new Date(schedule.startTime).toLocaleString()}
-      </Text>
-    </>
-  );
-}
-
 function Cell({
   children,
   align = "left",
@@ -708,18 +617,3 @@ function getSessionTypeLabel(type: ScheduleType): string {
   return labels[type];
 }
 
-function formatCountdown(schedule: Schedule, now: number): string {
-  const remaining = Math.max(
-    0,
-    Math.floor((Date.parse(schedule.startTime) - now) / 1000),
-  );
-  const days = Math.floor(remaining / 86_400);
-  const hours = Math.floor((remaining % 86_400) / 3_600);
-  const minutes = Math.floor((remaining % 3_600) / 60);
-  const seconds = remaining % 60;
-  const time = [hours, minutes, seconds]
-    .map((value) => String(value).padStart(2, "0"))
-    .join(":");
-
-  return days > 0 ? `${days}d ${time}` : time;
-}

@@ -14,7 +14,9 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useListRaces } from "../../hooks/useListRaces";
 import { CountDown } from "./components/CountDown";
 import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
-import type { EventStatus } from "@/api/types/race";
+import {
+  getEventStatusPalette,
+} from "@/utils/eventStatus";
 import { RiArrowRightLine } from "react-icons/ri";
 import F1Dashboard from "./F1Dashboard";
 
@@ -63,7 +65,9 @@ export function LegacyHome() {
                 <Stack gap="4">
                   <Stack direction="row" justify="space-between" gap="4">
                     <Heading size="lg">Race week atual</Heading>
-                    <Badge>{data.currentRace.status}</Badge>
+                    <Badge colorPalette={getEventStatusPalette(data.currentRace.status)}>
+                      {data.currentRace.statusLabel}
+                    </Badge>
                   </Stack>
 
                   <Stack
@@ -102,11 +106,9 @@ export function LegacyHome() {
                                   <Stack direction="row" gap="2" wrap="wrap">
                                     <Badge
                                       variant="outline"
-                                      color={getEventStatusColor(
-                                        session.status,
-                                      )}
+                                      colorPalette={getEventStatusPalette(session.status)}
                                     >
-                                      {session.status}
+                                      {session.statusLabel}
                                     </Badge>
                                   </Stack>
                                 </Stack>
@@ -146,7 +148,9 @@ export function LegacyHome() {
                 <Stack gap="4">
                   <Stack direction="row" justify="space-between" gap="4">
                     <Heading size="lg">Próxima race week</Heading>
-                    <Badge>{data.nextRace.status}</Badge>
+                    <Badge colorPalette={getEventStatusPalette(data.nextRace.status)}>
+                      {data.nextRace.statusLabel}
+                    </Badge>
                   </Stack>
 
                   <Stack
@@ -200,7 +204,9 @@ export function LegacyHome() {
                           wrap="wrap"
                         >
                           <Heading size="lg">{race.name}</Heading>
-                          <Badge>{race.status}</Badge>
+                          <Badge colorPalette={getEventStatusPalette(race.status)}>
+                            {race.statusLabel}
+                          </Badge>
                         </Stack>
                         <Text>
                           {race.location.country.name} - {race.location.city}
@@ -231,8 +237,3 @@ export function LegacyHome() {
   );
 }
 
-const getEventStatusColor = (status: EventStatus) => {
-  if (status === "completed") return "fg.muted";
-  if (status === "ongoing") return "green.500";
-  if (status === "scheduled") return "fg.info";
-};

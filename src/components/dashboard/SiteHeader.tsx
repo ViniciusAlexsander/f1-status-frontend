@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Container,
   Flex,
   HStack,
@@ -15,14 +14,12 @@ type SiteHeaderProps = {
   isLive: boolean;
   statusLabel: string;
   compactStatusLabel?: string;
-  onToggleLive?: () => void;
 };
 
 export function SiteHeader({
   isLive,
   statusLabel,
   compactStatusLabel,
-  onToggleLive,
 }: SiteHeaderProps) {
   return (
     <Box
@@ -126,27 +123,6 @@ export function SiteHeader({
               <MobileNavDrawer />
             </Box>
 
-            {onToggleLive && (
-              <Button
-                display={{ base: "none", md: "inline-flex" }}
-                size="sm"
-                variant={isLive ? "subtle" : "outline"}
-                colorPalette={isLive ? "f1" : "gray"}
-                onClick={onToggleLive}
-                fontFamily="mono"
-                fontSize="10px"
-                letterSpacing="0.12em"
-                textTransform="uppercase"
-              >
-                <Box
-                  w="2"
-                  h="2"
-                  borderRadius="full"
-                  bg={isLive ? "f1.500" : "fg.muted"}
-                />
-                {isLive ? "Ao vivo" : "Fora do ar"}
-              </Button>
-            )}
           </HStack>
         </Flex>
       </Container>

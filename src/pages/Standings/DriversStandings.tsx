@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { StandingTeamLogo } from "@/components/dashboard/StandingsPanel";
 
 export default function DriversStandings() {
   const { data: driversStandings, isLoading, isError } = useDriversStandings();
@@ -82,12 +83,7 @@ export default function DriversStandings() {
                 >
                   {driver.position || index + 1}
                 </Text>
-                <Box
-                  h="4"
-                  w="3px"
-                  flexShrink="0"
-                  bg={team?.color ?? "border"}
-                />
+                <StandingTeamLogo teamName={team?.name} />
                 <Text minW="0" flex="1" truncate fontSize="13px">
                   <Text as="span" fontFamily="mono" fontWeight="600">
                     {driver.code}

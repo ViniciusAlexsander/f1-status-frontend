@@ -12,3 +12,15 @@ export function getFocusedSession(race: RaceWeek) {
       )[0]
   );
 }
+
+export function getNextScheduledSession(race: RaceWeek, now = Date.now()) {
+  return race.schedule
+    .filter(
+      (session) =>
+        session.status === "scheduled" && Date.parse(session.startTime) > now,
+    )
+    .sort(
+      (first, second) =>
+        Date.parse(first.startTime) - Date.parse(second.startTime),
+    )[0];
+}

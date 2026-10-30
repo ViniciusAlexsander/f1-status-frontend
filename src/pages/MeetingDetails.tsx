@@ -18,6 +18,7 @@ import { useSessionResults } from "@/hooks/useSessionResults";
 import type { SessionResult } from "@/api/types/results";
 import type { RaceWeek, Schedule } from "@/api/types/race";
 import { formatDate, formatDateTimeString } from "@/utils/date";
+import { getEventStatusPalette } from "@/utils/eventStatus";
 
 export default function MeetingDetails() {
   const { id } = useParams();
@@ -268,8 +269,8 @@ function SessionSection({
           </Text>
         </Box>
         <Flex gap="2">
-          <Badge colorPalette={session.status === "ongoing" ? "f1" : "gray"}>
-            {session.status}
+          <Badge colorPalette={getEventStatusPalette(session.status)}>
+            {session.statusLabel}
           </Badge>
           <Badge variant="outline">{session.type}</Badge>
           <Button

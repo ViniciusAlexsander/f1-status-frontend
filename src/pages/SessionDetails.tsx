@@ -15,6 +15,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { useListRaces } from "@/hooks/useListRaces";
 import { useSessionResults } from "@/hooks/useSessionResults";
 import type { SessionResult } from "@/api/types/results";
+import { getEventStatusPalette } from "@/utils/eventStatus";
 
 export default function SessionDetails() {
   const { meetingsId, sessionId } = useParams();
@@ -93,7 +94,9 @@ export default function SessionDetails() {
         <Stack gap="2">
           <Flex align="center" gap="3" wrap="wrap">
             <Heading size="xl">{session.name}</Heading>
-            <Badge>{session.status}</Badge>
+            <Badge colorPalette={getEventStatusPalette(session.status)}>
+              {session.statusLabel}
+            </Badge>
           </Flex>
           <Text color="fg.muted">
             {race.location.name} · {race.location.city}

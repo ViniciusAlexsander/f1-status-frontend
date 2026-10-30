@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Box,
@@ -14,6 +14,10 @@ import { RiArrowRightLine, RiCalendarLine, RiRadioLine } from "react-icons/ri";
 import type { RaceWeek, Schedule } from "@/api/types/race";
 import { useSessionResults } from "@/hooks/useSessionResults";
 import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
+import {
+  getEventStatusPalette,
+} from "@/utils/eventStatus";
+import { getNextScheduledSession } from "./homeUtils";
 
 type PanelProps = { children: React.ReactNode; visible: boolean };
 
@@ -94,20 +98,15 @@ export function SectionTitle({
 }
 
 function Countdown({ race }: { race: RaceWeek }) {
-  const target = useMemo(
-    () => new Date(`${race.dateStart}T00:00:00`).getTime(),
-    [race.dateStart],
-  );
-  const [remaining, setRemaining] = useState(() =>
-    Math.max(0, target - Date.now()),
-  );
-
+  const [now, setNow] = useState(Date.now());
   useEffect(() => {
-    const update = () => setRemaining(Math.max(0, target - Date.now()));
-    update();
-    const id = window.setInterval(update, 1000);
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
-  }, [target]);
+  }, []);
+
+  const nextSession = getNextScheduledSession(race, now);
+  if (!nextSession) return null;
+  const remaining = Math.max(0, Date.parse(nextSession.startTime) - now);
 
   const parts = [
     [Math.floor(remaining / 86_400_000), "dias"],
@@ -118,6 +117,9 @@ function Countdown({ race }: { race: RaceWeek }) {
 
   return (
     <Flex gap={{ base: 3, md: 5 }} align="end" wrap="wrap">
+      <Text w="full" fontFamily="mono" fontSize="10px" color="fg.muted">
+        Proxima sessao: {nextSession.name}
+      </Text>
       {parts.map(([value, label]) => (
         <Box key={label} textAlign="center">
           <Text
@@ -145,7 +147,16 @@ function Countdown({ race }: { race: RaceWeek }) {
   );
 }
 
-function SessionRow({ session }: { session: Schedule }) {
+function SessionRow({
+  session,
+  isFocused,
+}: {
+  session: Schedule;
+  isFocused: boolean;
+}) {
+  const statusLabel = session.statusLabel;
+  const statusPalette = getEventStatusPalette(session.status);
+
   return (
     <Flex
       align="center"
@@ -153,19 +164,35 @@ function SessionRow({ session }: { session: Schedule }) {
       gap="3"
       borderTopWidth="1px"
       borderColor="border"
-      px="5"
+      borderLeftWidth={isFocused ? "3px" : "0"}
+      borderLeftColor={isFocused ? "f1.500" : "transparent"}
+      bg={isFocused ? "bg.subtle" : "transparent"}
+      px="3"
       py="2.5"
     >
-      <Text
-        fontSize="sm"
-        color={session.type === "race" ? "fg" : "fg.muted"}
-        fontWeight={session.type === "race" ? "600" : "400"}
-      >
-        {session.name}
-      </Text>
-      <Text fontFamily="mono" fontSize="xs" color="fg.muted">
-        {formatDateTime(session.startTime)}
-      </Text>
+      <Box minW="0">
+        <Text
+          fontSize="sm"
+          color={session.type === "race" ? "fg" : "fg.muted"}
+          fontWeight={session.type === "race" || isFocused ? "600" : "400"}
+          truncate
+        >
+          {session.name}
+        </Text>
+        <Text mt="1" fontFamily="mono" fontSize="10px" color="fg.muted">
+          {formatDateTime(session.startTime)}
+        </Text>
+      </Box>
+      <Flex flexShrink="0" align="center" justify="end" gap="1" wrap="wrap">
+        <Badge colorPalette={statusPalette} variant="subtle" fontSize="9px">
+          {statusLabel}
+        </Badge>
+        {isFocused && (
+          <Badge colorPalette="f1" fontSize="9px">
+            {session.status === "ongoing" ? "Agora" : "Proxima"}
+          </Badge>
+        )}
+      </Flex>
     </Flex>
   );
 }
@@ -205,8 +232,8 @@ export function NextRacePanel({
                   ? "Etapa em andamento"
                   : "Próxima etapa"}
               </Text>
-              <Badge colorPalette="f1" variant="outline">
-                {race.status}
+              <Badge colorPalette={getEventStatusPalette(race.status)} variant="subtle">
+                {race.statusLabel}
               </Badge>
               {focusedSession && (
                 <Text
@@ -239,6 +266,18 @@ export function NextRacePanel({
             <Button asChild size="sm" variant="outline" alignSelf="start">
               <RouterLink to={`/meetings/${race.id}`}>Ver detalhes</RouterLink>
             </Button>
+            {focusedSession?.status === "ongoing" && (
+              <Button
+                asChild
+                size="sm"
+                colorPalette="f1"
+                alignSelf="start"
+              >
+                <RouterLink to="/live">
+                  <RiRadioLine /> Live Timing
+                </RouterLink>
+              </Button>
+            )}
             <Countdown race={race} />
           </Stack>
           <Box
@@ -261,7 +300,11 @@ export function NextRacePanel({
             </Text>
             <Stack gap="0">
               {race.schedule.map((session) => (
-                <SessionRow key={session.id} session={session} />
+                <SessionRow
+                  key={session.id}
+                  session={session}
+                  isFocused={focusedSession?.id === session.id}
+                />
               ))}
             </Stack>
           </Box>
@@ -332,20 +375,14 @@ export function CalendarPanel({
               <Text mt="3" fontFamily="mono" fontSize="10px" color="fg.muted">
                 {formatDateWithoutTime(race.dateStart)}
               </Text>
-              <Text
+              <Badge
                 mt="3"
-                fontFamily="mono"
-                fontSize="10px"
-                letterSpacing="0.1em"
-                color={race.status === "ongoing" ? "f1.500" : "fg.muted"}
-                textTransform="uppercase"
+                colorPalette={getEventStatusPalette(race.status)}
+                variant="subtle"
+                fontSize="9px"
               >
-                {race.status === "ongoing"
-                  ? "Em andamento"
-                  : race.status === "completed"
-                    ? "Encerrado"
-                    : "A disputar"}
-              </Text>
+                {race.statusLabel}
+              </Badge>
               <Button asChild mt="3" size="xs" variant="outline" width="full">
                 <RouterLink to={`/meetings/${race.id}`}>
                   Ver detalhes
@@ -372,16 +409,9 @@ export function ResultsPanel({ races }: { races: RaceWeek[] }) {
           </Text>
         ) : (
           races.map((race) => (
-            <Flex
-              key={race.id}
-              align={{ md: "center" }}
-              direction={{ base: "column", md: "row" }}
-              justify="space-between"
-              gap="3"
-              px={{ base: 4, md: 5 }}
-              py="3.5"
-            >
-              <Box w="full">
+            <Box key={race.id} px={{ base: 4, md: 5 }} py="3.5">
+              <Flex align="flex-start" justify="space-between" gap="3">
+                <Box minW="0">
                 <Text
                   fontFamily="mono"
                   fontSize="10px"
@@ -401,16 +431,22 @@ export function ResultsPanel({ races }: { races: RaceWeek[] }) {
                     {race.name}
                   </Text>
                 </RouterLink>
-                <Button asChild mt="2" size="xs" variant="outline">
-                  <RouterLink to={`/meetings/${race.id}`}>
-                    Ver detalhes
-                  </RouterLink>
-                </Button>
-              </Box>
-              <Badge colorPalette="gray" variant="outline">
-                {race.status}
-              </Badge>
-            </Flex>
+                </Box>
+                <Badge
+                  flexShrink="0"
+                  whiteSpace="nowrap"
+                  colorPalette={getEventStatusPalette(race.status)}
+                  variant="subtle"
+                >
+                  {race.statusLabel}
+                </Badge>
+              </Flex>
+              <Button asChild mt="2" size="xs" variant="outline">
+                <RouterLink to={`/meetings/${race.id}`}>
+                  Ver detalhes
+                </RouterLink>
+              </Button>
+            </Box>
           ))
         )}
       </Stack>
@@ -477,14 +513,13 @@ export function LastRacePanel({ race }: { race: RaceWeek }) {
         >
           Última etapa
         </Heading>
-        <Text
-          fontFamily="mono"
-          fontSize="10px"
-          color="fg.muted"
-          textTransform="uppercase"
+        <Badge
+          colorPalette={getEventStatusPalette(race.status)}
+          variant="subtle"
+          fontSize="9px"
         >
-          {race.status}
-        </Text>
+          {race.statusLabel}
+        </Badge>
       </Flex>
       <Text px="4" pt="3" fontSize="15px" fontWeight="500">
         {race.name}
