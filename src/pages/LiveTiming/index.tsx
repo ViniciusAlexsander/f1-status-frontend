@@ -1,6 +1,7 @@
 import { RaceControlPanel } from "./components/RaceControlPanel";
 import { LiveTimingHeader } from "./components/LiveTimingHeader";
 import { LiveTimingLeaderboard } from "./components/LiveTimingLeaderboard";
+import { UpcomingSessionBanner } from "./components/UpcomingSessionBanner";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
 import { useLiveTimingUpdates } from "@/hooks/useLiveTimingUpdates";
 import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
@@ -17,10 +18,13 @@ export default function LiveTiming() {
   const { trackStatus, weather, messages, penalties, newMessageBatch } =
     useLiveTimingUpdates();
   const { data: raceData } = useListRaces();
-  const { sessionName, sessionTypeLabel } = useLiveTimingPageState(
-    raceData,
-    session,
-  );
+  const {
+    sessionName,
+    sessionTypeLabel,
+    nextScheduledSession,
+    nextSessionRace,
+    showNextSessionBanner,
+  } = useLiveTimingPageState(raceData, session);
   const { unreadMessages, historyRef, openHistory } =
     useRaceControlNotifications(newMessageBatch);
 
@@ -33,6 +37,15 @@ export default function LiveTiming() {
     }
     return result;
   }, [penalties]);
+
+  if (showNextSessionBanner && raceData) {
+    return (
+      <UpcomingSessionBanner
+        nextScheduledSession={nextScheduledSession}
+        nextSessionRace={nextSessionRace}
+      />
+    );
+  }
 
   return (
     <Box w="full" minH="calc(100dvh - 72px)" overflowX="clip">

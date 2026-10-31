@@ -1,4 +1,4 @@
-import type { RaceListData, Schedule } from "@/api/types/race";
+import type { RaceListData, RaceWeek, Schedule } from "@/api/types/race";
 import { useEffect, useMemo, useState } from "react";
 import type { LiveSession } from "../types";
 
@@ -37,6 +37,14 @@ export function useLiveTimingPageState(
           Date.parse(first.startTime) - Date.parse(second.startTime),
       )[0];
   }, [raceData, now]);
+  const nextSessionRace = [raceData?.currentRace, raceData?.nextRace].find(
+    (race): race is RaceWeek =>
+      Boolean(
+        race?.schedule.some(
+          (scheduled) => scheduled.id === nextScheduledSession?.id,
+        ),
+      ),
+  );
   const sessionTypeLabel =
     session?.sessionTypeLabel ??
     (activeSchedule
@@ -62,6 +70,10 @@ export function useLiveTimingPageState(
     isSessionOver && Number.isFinite(sessionFinishedAt)
       ? sessionFinishedAt + FINISHED_SESSION_GRACE_PERIOD_MS
       : undefined;
+  const showNextSessionBanner =
+    isWaitingForNextSession &&
+    Boolean(raceData) &&
+    !isWithinFinishedSessionGracePeriod;
 
   useEffect(() => {
     const shouldUpdateCountdown =
@@ -106,9 +118,11 @@ export function useLiveTimingPageState(
   }, [isWaitingForNextSession, nextScheduledSession]);
 
   return {
-    now,
     sessionName: raceData?.currentRace?.name ?? "Sessão atual",
     sessionTypeLabel,
+    nextScheduledSession,
+    nextSessionRace,
+    showNextSessionBanner,
   };
 }
 
