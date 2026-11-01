@@ -38,14 +38,14 @@ export default function LiveTiming() {
     return result;
   }, [penalties]);
 
-  // if (showNextSessionBanner && raceData) {
-  //   return (
-  //     <UpcomingSessionBanner
-  //       nextScheduledSession={nextScheduledSession}
-  //       nextSessionRace={nextSessionRace}
-  //     />
-  //   );
-  // }
+  if (showNextSessionBanner && raceData) {
+    return (
+      <UpcomingSessionBanner
+        nextScheduledSession={nextScheduledSession}
+        nextSessionRace={nextSessionRace}
+      />
+    );
+  }
 
   return (
     <Box w="full" minH="calc(100dvh - 72px)" overflowX="clip">
