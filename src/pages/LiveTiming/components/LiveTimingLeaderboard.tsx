@@ -8,9 +8,7 @@ import { TeamLogo } from "./TeamLogo";
 import { TyreStintDisplay } from "./TyreStintDisplay";
 
 const leaderboardColumns = {
-  base: "22px 60px 30px 60px 50px 42px 60px 56px 42px 30px",
-  md: "30px 64px repeat(8, minmax(0, 1fr))",
-  xl: "36px 64px repeat(8, minmax(0, 1fr))",
+  base: "minmax(28px, 0.55fr) minmax(84px, 1.2fr) minmax(42px, 0.6fr) minmax(64px, 1fr) minmax(80px, 1.1fr) minmax(64px, 0.85fr) minmax(64px, 1fr) minmax(48px, 0.7fr) minmax(56px, 0.8fr) minmax(44px, 0.6fr)",
 };
 
 type LiveTimingLeaderboardProps = {
@@ -33,7 +31,7 @@ export function LiveTimingLeaderboard({
       overscrollBehaviorX="contain"
       css={{ scrollbarColor: "var(--chakra-colors-border) transparent" }}
     >
-      <Box w="full" maxW="full">
+      <Box w="max-content" minW="full">
         {drivers.length === 0 ? (
           <Box
             borderWidth="1px"
@@ -53,10 +51,10 @@ export function LiveTimingLeaderboard({
             </Text>
           </Box>
         ) : (
-          <Box w="full" minW={{ base: "500px", md: "0" }}>
+          <Box w="full" minW="full">
             <Grid
               templateColumns={leaderboardColumns}
-              columnGap={{ base: 0.5, md: 2 }}
+              columnGap={{ base: 0, md: 0.5 }}
               rowGap="0"
               alignItems="center"
               position="sticky"
@@ -90,7 +88,7 @@ export function LiveTimingLeaderboard({
               <Grid
                 key={driver.id}
                 templateColumns={leaderboardColumns}
-                columnGap={{ base: 0.5, md: 2 }}
+                columnGap={{ base: 0, md: 0.5 }}
                 rowGap="0"
                 alignItems="center"
                 minH={{ base: "34px", md: "42px" }}
@@ -135,11 +133,9 @@ export function LiveTimingLeaderboard({
                 >
                   {driver.BestLapTime?.Value ?? "—"}
                 </Cell>
-                <Box minW="0">
-                  <Cell align="right">
-                    {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
-                  </Cell>
-                </Box>
+                <Cell align="right">
+                  {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
+                </Cell>
                 <Cell align="right">
                   {driver.IntervalToPositionAhead?.Value ??
                     driver.TimeDiffToPositionAhead ??
@@ -180,12 +176,11 @@ function Cell({
 }) {
   return (
     <Text
-      minW="0"
       textAlign={align}
       color={color}
       fontFamily="mono"
       fontSize="xs"
-      truncate
+      whiteSpace="nowrap"
     >
       {children}
     </Text>
