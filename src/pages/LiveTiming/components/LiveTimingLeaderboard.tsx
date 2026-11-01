@@ -1,14 +1,14 @@
 import type { DriverPenalty, DriverTimingItem } from "@/api/types/livetiming";
 import { Badge, Box, Flex, Grid, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { RiArrowDownSLine, RiArrowUpSLine, RiTimerLine } from "react-icons/ri";
 import { DriverIndicators } from "./DriverIndicators";
 import { PitStopsDisplay } from "./PitStopsDisplay";
 import { TeamLogo } from "./TeamLogo";
 import { TyreStintDisplay } from "./TyreStintDisplay";
 
 const leaderboardColumns = {
-  base: "minmax(28px, 0.55fr) minmax(84px, 1.2fr) minmax(42px, 0.6fr) minmax(64px, 1fr) minmax(80px, 1.1fr) minmax(64px, 0.85fr) minmax(64px, 1fr) minmax(48px, 0.7fr) minmax(56px, 0.8fr) minmax(44px, 0.6fr)",
+  base: "minmax(28px, 0.55fr) minmax(max-content, 1.5fr) minmax(42px, 0.6fr) minmax(48px, 0.7fr) minmax(56px, 0.8fr) minmax(48px, 0.7fr) minmax(64px, 1fr) minmax(64px, 0.85fr) minmax(64px, 1fr) minmax(44px, 0.6fr)",
 };
 
 type LiveTimingLeaderboardProps = {
@@ -73,15 +73,23 @@ export function LiveTimingLeaderboard({
             >
               <Text>Pos</Text>
               <Text>Piloto</Text>
-              <Text textAlign="center" title="Ganho/perda de posições">
-                G/P
-              </Text>
+              <Text textAlign="right">Int</Text>
+              <Flex
+                textAlign="center"
+                align="center"
+                justify="center"
+                fontSize="sm"
+                title="Posições ganhas ou perdidas"
+                aria-label="Posições ganhas ou perdidas"
+              >
+                <RiArrowUpSLine aria-hidden="true" />
+                <RiArrowDownSLine aria-hidden="true" />
+              </Flex>
+              <Text textAlign="center">Pneu</Text>
+              <Text textAlign="center">Pits</Text>
               <Text textAlign="right">Melhor</Text>
               <Text textAlign="right">Gap</Text>
-              <Text textAlign="right">Int</Text>
               <Text textAlign="right">Última</Text>
-              <Text textAlign="center">Pits</Text>
-              <Text textAlign="center">Pneu</Text>
               <Text textAlign="center">Laps</Text>
             </Grid>
             {drivers.map((driver, index) => (
@@ -102,7 +110,7 @@ export function LiveTimingLeaderboard({
                 <Text fontFamily="mono" fontSize="sm" fontWeight="700">
                   {driver.Position ?? driver.RacingNumber ?? "—"}
                 </Text>
-                <Flex minW="0" align="center" gap="1">
+                <Flex minW="max-content" align="center" gap="1">
                   {driver.driverData && (
                     <TeamLogo
                       teamName={driver.driverData.teams[0]?.shortName}
@@ -118,6 +126,13 @@ export function LiveTimingLeaderboard({
                   >
                     {driver.driverData?.code ?? driver.RacingNumber}
                   </Badge>
+                  {driver.isFastestLap && (
+                    <RiTimerLine
+                      aria-label="Volta mais rápida"
+                      color="var(--chakra-colors-fastest)"
+                      title="Volta mais rápida"
+                    />
+                  )}
                   <DriverIndicators
                     penalties={
                       driver.RacingNumber
@@ -126,35 +141,23 @@ export function LiveTimingLeaderboard({
                     }
                   />
                 </Flex>
-                <PositionChange value={driver.positionChange} />
-                <Cell
-                  align="right"
-                  color={driver.isFastestLap ? "fastest" : "fg"}
-                >
-                  {driver.BestLapTime?.Value ?? "—"}
-                </Cell>
-                <Cell align="right">
-                  {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
-                </Cell>
-                <Cell align="right">
+                <Cell align="right" color="fg">
                   {driver.IntervalToPositionAhead?.Value ??
                     driver.TimeDiffToPositionAhead ??
-                    "—"}
+                    "-"}
                 </Cell>
-                <Cell
-                  align="right"
-                  color={
-                    driver.LastLapTime?.PersonalFastest ? "personalBest" : "fg"
-                  }
-                >
-                  {driver.LastLapTime?.Value ?? "—"}
+                <PositionChange value={driver.positionChange} />
+                <Cell align="center">
+                  <TyreStintDisplay driver={driver} />
                 </Cell>
                 <Cell align="center">
                   <PitStopsDisplay driver={driver} />
                 </Cell>
-                <Cell align="center">
-                  <TyreStintDisplay driver={driver} />
+                <Cell align="right">{driver.BestLapTime?.Value ?? "—"}</Cell>
+                <Cell align="right">
+                  {driver.GapToLeader ?? (index === 0 ? "LÍDER" : "—")}
                 </Cell>
+                <Cell align="right">{driver.LastLapTime?.Value ?? "—"}</Cell>
                 <Cell align="center">{driver.NumberOfLaps ?? "—"}</Cell>
               </Grid>
             ))}

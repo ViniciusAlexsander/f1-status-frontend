@@ -8,60 +8,71 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useCurrentTyresLiveTimingData } from "./useCurrentTyresLiveTimingData";
 import { useTyreStintSeriesLiveTimingData } from "./useTyreStintSeriesLiveTimingData";
 
-export function useDriversLiveTimingData() {
+const EMPTY_STARTING_POSITIONS = new Map<string, number>();
+
+export function useDriversLiveTimingData(
+  startingPositions: ReadonlyMap<string, number> = EMPTY_STARTING_POSITIONS,
+) {
   const [drivers, setDrivers] = useState<DriverTimingItem[]>([]);
   const { currentTyres } = useCurrentTyresLiveTimingData();
   const { stints } = useTyreStintSeriesLiveTimingData();
   const currentTyresRef = useRef(currentTyres);
   const stintsRef = useRef(stints);
   const latestTimingRef = useRef<TimingUpdate | undefined>(undefined);
-  const startingPositionsRef = useRef<Map<string, number>>(new Map());
+  const startingPositionsRef = useRef(startingPositions);
   const positionChangesRef = useRef<Map<string, number>>(new Map());
 
-  const attachPositionChanges = useCallback((items: DriverTimingItem[]) =>
-    items.map((driver) => ({
-      ...driver,
-      positionChange: driver.RacingNumber
-        ? positionChangesRef.current.get(driver.RacingNumber)
-        : undefined,
-    })), []);
+  const attachPositionChanges = useCallback(
+    (items: DriverTimingItem[]) =>
+      items.map((driver) => ({
+        ...driver,
+        positionChange: driver.RacingNumber
+          ? positionChangesRef.current.get(driver.RacingNumber)
+          : undefined,
+      })),
+    [],
+  );
 
   const updatePositionChanges = useCallback((items: DriverTimingItem[]) => {
-    const currentPositions = new Map<string, number>();
+    const changes = new Map<string, number>();
     for (const driver of items) {
       if (!driver.RacingNumber) continue;
       const position = Number(driver.Position);
-      if (Number.isFinite(position)) {
-        currentPositions.set(driver.RacingNumber, position);
+      const startingPosition = startingPositionsRef.current.get(
+        driver.RacingNumber,
+      );
+      if (
+        startingPosition == null ||
+        !Number.isInteger(position) ||
+        position < 1
+      ) {
+        continue;
       }
-    }
-
-    if (startingPositionsRef.current.size === 0) {
-      startingPositionsRef.current = currentPositions;
-      positionChangesRef.current = new Map();
-      return;
-    }
-
-    const changes = new Map<string, number>();
-    for (const [racingNumber, position] of currentPositions) {
-      const startingPosition = startingPositionsRef.current.get(racingNumber);
-      if (startingPosition == null) continue;
-      const change = startingPosition - position;
-      if (change !== 0) changes.set(racingNumber, change);
+      changes.set(driver.RacingNumber, startingPosition - position);
     }
     positionChangesRef.current = changes;
   }, []);
 
-  const updateFromTiming = useCallback((timing: TimingUpdate) => {
-    const updated = timingToArray(
-      timing,
-      DRIVERS_DATA,
-      currentTyresRef.current?.Tyres,
-      stintsRef.current,
-    );
-    updatePositionChanges(updated);
-    setDrivers(attachPositionChanges(updated));
-  }, [attachPositionChanges, updatePositionChanges]);
+  const updateFromTiming = useCallback(
+    (timing: TimingUpdate) => {
+      const updated = timingToArray(
+        timing,
+        DRIVERS_DATA,
+        currentTyresRef.current?.Tyres,
+        stintsRef.current,
+      );
+      updatePositionChanges(updated);
+      setDrivers(attachPositionChanges(updated));
+    },
+    [attachPositionChanges, updatePositionChanges],
+  );
+
+  useEffect(() => {
+    startingPositionsRef.current = startingPositions;
+    if (latestTimingRef.current) {
+      updateFromTiming(latestTimingRef.current);
+    }
+  }, [startingPositions, updateFromTiming]);
 
   useEffect(() => {
     currentTyresRef.current = currentTyres;
@@ -105,9 +116,15 @@ export function useDriversLiveTimingData() {
       updateFromTiming(timing);
     };
 
-    eventSource.addEventListener("timing_update", handleTimingUpdate as EventListener);
+    eventSource.addEventListener(
+      "timing_update",
+      handleTimingUpdate as EventListener,
+    );
     return () => {
-      eventSource.removeEventListener("timing_update", handleTimingUpdate as EventListener);
+      eventSource.removeEventListener(
+        "timing_update",
+        handleTimingUpdate as EventListener,
+      );
       eventSource.close();
     };
   }, [attachPositionChanges, updateFromTiming]);

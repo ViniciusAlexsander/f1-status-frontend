@@ -9,11 +9,16 @@ type ParsedPenalty = Omit<DriverPenalty, "id" | "issuedAt" | "resolvedAt"> & {
   status: PenaltyStatus;
 };
 
-function parsePenaltyMessage(message: RaceControlMessage): ParsedPenalty | undefined {
+function parsePenaltyMessage(
+  message: RaceControlMessage,
+): ParsedPenalty | undefined {
   const text = message.Message?.trim();
-  if (!text || /under investigation|investigation/i.test(text)) return undefined;
+  if (!text || /under investigation|investigation/i.test(text))
+    return undefined;
 
-  const resolution = text.match(/\bPENALTY\s+(SERVED|CANCELLED|CANCELED|RESCINDED)\s*[-:]\s*(.+)$/i);
+  const resolution = text.match(
+    /\bPENALTY\s+(SERVED|CANCELLED|CANCELED|RESCINDED)\s*[-:]\s*(.+)$/i,
+  );
   const status: PenaltyStatus = resolution
     ? resolution[1].toUpperCase() === "SERVED"
       ? "served"
@@ -122,7 +127,11 @@ export function getQualifyingRemainingSeconds(
   redFlagIntervals: Array<{ startedAt: string; endedAt: string | null }> = [],
   now = Date.now(),
 ): number | undefined {
-  const durationSeconds: Record<number, number> = { 1: 18 * 60, 2: 15 * 60, 3: 13 * 60 };
+  const durationSeconds: Record<number, number> = {
+    1: 18 * 60,
+    2: 15 * 60,
+    3: 13 * 60,
+  };
   const duration = durationSeconds[part];
   const start = startedAt ? Date.parse(startedAt) : Number.NaN;
   if (!duration || !Number.isFinite(start)) return undefined;
