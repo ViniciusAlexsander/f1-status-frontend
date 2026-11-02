@@ -63,7 +63,7 @@ export function LiveTimingLeaderboard({
               bg="bg.subtle"
               borderBottomWidth="1px"
               borderColor="border"
-              px={{ base: 0.5, md: 2 }}
+              px={{ base: 2, md: 2 }}
               py={{ base: 1, md: 2 }}
               fontFamily="mono"
               fontSize="9px"
@@ -100,7 +100,7 @@ export function LiveTimingLeaderboard({
                 rowGap="0"
                 alignItems="center"
                 minH={{ base: "34px", md: "42px" }}
-                px={{ base: 0.5, md: 2 }}
+                px={{ base: 2, md: 2 }}
                 py={{ base: 0.5, md: 1 }}
                 bg={index % 2 === 0 ? "card" : "bg.subtle"}
                 borderBottomWidth="1px"
@@ -205,7 +205,7 @@ function PositionChange({ value }: { value?: number }) {
       align="center"
       justify="center"
       gap="0.5"
-      color={gained ? "green.400" : "red.400"}
+      color={gained ? "green" : "red"}
       fontFamily="mono"
       fontSize="xs"
       fontWeight="700"
