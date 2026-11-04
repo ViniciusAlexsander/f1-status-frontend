@@ -369,4 +369,20 @@ export const DRIVERS_DATA: DriverData[] = [
       },
     ],
   },
+  {
+    id: "1234567890",
+    firstName: "Rafael",
+    lastName: "Câmara",
+    code: "CAM",
+    number: 50,
+    teams: [
+      {
+        id: "af7690d3-cecd-45fa-b3ea-8876a0f65587",
+        name: "Haas F1 Team",
+        shortName: "Haas F1 Team",
+        color: "#dee1e2",
+        textColor: "#0f172a",
+      },
+    ],
+  },
 ];
