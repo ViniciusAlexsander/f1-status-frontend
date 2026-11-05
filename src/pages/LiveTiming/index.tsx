@@ -62,20 +62,18 @@ export default function LiveTiming() {
     raceData?.currentRace?.id,
     qualifyingSchedule?.id,
   );
-  const startingPositions = useMemo(
-    () =>
-      new Map(
-        (qualifyingResults ?? []).flatMap((result) => {
-          const position = Number(result.position);
-          const racingNumber = result.carNumber || String(result.driver.number);
-          if (!Number.isInteger(position) || position < 1 || !racingNumber) {
-            return [];
-          }
-          return [[racingNumber, position] as const];
-        }),
-      ),
-    [qualifyingResults],
-  );
+  const startingPositions = useMemo(() => {
+    return new Map(
+      (qualifyingResults ?? []).flatMap((result) => {
+        const position = Number(result.position);
+        const racingNumber = result.carNumber || String(result.driver.number);
+        if (!Number.isInteger(position) || position < 1 || !racingNumber) {
+          return [];
+        }
+        return [[racingNumber, position] as const];
+      }),
+    );
+  }, [qualifyingResults]);
   const { drivers } = useDriversLiveTimingData(startingPositions);
   const {
     sessionName,

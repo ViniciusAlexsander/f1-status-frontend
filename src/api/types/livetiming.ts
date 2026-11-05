@@ -3,10 +3,18 @@ import type { DriverData } from "./driver";
 export interface TimingUpdate {
   topic: string;
   payload: TimingPayload;
+  receivedAt?: string;
+  isSnapshot?: boolean;
 }
 
 export interface TimingPayload {
   Lines: Record<string, DriverTiming>;
+  NoEntries?: number[];
+  SessionPart?: number;
+  CutOffTime?: string;
+  CutOffPercentage?: string;
+  Withheld?: boolean;
+  _kf?: boolean;
 }
 
 export interface SessionStatus {
@@ -118,7 +126,7 @@ export interface DriverTiming {
   GapToLeader?: string;
   IntervalToPositionAhead?: {
     Value: string;
-    Catching: false;
+    Catching: boolean;
   };
 
   Line?: number;
@@ -126,6 +134,8 @@ export interface DriverTiming {
   ShowPosition?: boolean;
   RacingNumber?: string;
 
+  KnockedOut?: boolean;
+  Cutoff?: boolean;
   Retired?: boolean;
   InPit?: boolean;
   PitOut?: boolean;
@@ -135,6 +145,12 @@ export interface DriverTiming {
 
   Sectors?: Record<string, Sector>;
   Speeds?: Record<string, Speed>;
+
+  BestLapTimes?: Array<Partial<LapTime>>;
+  Stats?: Array<{
+    TimeDiffToFastest?: string;
+    TimeDifftoPositionAhead?: string;
+  }>;
 
   BestLapTime?: LapTime;
   LastLapTime?: LastLapTime;

@@ -32,12 +32,24 @@ export function formatDateTimeString(date: string) {
   });
 }
 
-export function formatDateTime(date: string) {
-  return new Date(date).toLocaleString("pt-BR", {
+function formatDateAtTime(date: string, includeYear: boolean) {
+  const value = new Date(date);
+  const datePart = value.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
-    year: "numeric",
+    ...(includeYear ? { year: "numeric" } : {}),
+  });
+  const timePart = value.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
   });
+  return `${datePart} - ${timePart}`;
+}
+
+export function formatDateTime(date: string) {
+  return formatDateAtTime(date, true);
+}
+
+export function formatSessionStartTime(date: string) {
+  return formatDateAtTime(date, false);
 }

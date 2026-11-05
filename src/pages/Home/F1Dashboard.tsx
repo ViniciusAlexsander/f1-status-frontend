@@ -77,7 +77,7 @@ export default function F1Dashboard() {
               focusedRaceId={activeRace?.id}
             />
 
-            <ResultsPanel races={finished} />
+            {/* <ResultsPanel races={finished} /> */}
           </Stack>
           <Stack gap="4" minW="0">
             <Stack gap="4">

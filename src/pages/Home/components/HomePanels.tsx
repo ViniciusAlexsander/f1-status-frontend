@@ -13,8 +13,9 @@ import { Link as RouterLink } from "react-router-dom";
 import { RiArrowRightLine, RiCalendarLine, RiRadioLine } from "react-icons/ri";
 import type { RaceWeek, Schedule } from "@/api/types/race";
 import { useSessionResults } from "@/hooks/useSessionResults";
-import { formatDateTime, formatDateWithoutTime } from "@/utils/date";
+import { formatDateTime, formatDateWithoutTime, formatSessionStartTime } from "@/utils/date";
 import { getEventStatusPalette } from "@/utils/eventStatus";
+import { ForecastDayRow, WeatherSummary } from "./WeatherSummary";
 import { getNextScheduledSession } from "./homeUtils";
 
 type PanelProps = { children: React.ReactNode; visible: boolean };
@@ -145,6 +146,31 @@ function Countdown({ race }: { race: RaceWeek }) {
   );
 }
 
+function SessionStatusBadges({
+  session,
+  isFocused,
+}: {
+  session: Schedule;
+  isFocused: boolean;
+}) {
+  return (
+    <Flex flexShrink={0} align="center" gap="1" wrap="wrap" justify="end">
+      <Badge
+        colorPalette={getEventStatusPalette(session.status)}
+        variant="subtle"
+        fontSize="9px"
+      >
+        {session.statusLabel}
+      </Badge>
+      {isFocused && (
+        <Badge colorPalette="f1" fontSize="9px">
+          {session.status === "ongoing" ? "Agora" : "Proxima"}
+        </Badge>
+      )}
+    </Flex>
+  );
+}
+
 function SessionRow({
   session,
   isFocused,
@@ -152,46 +178,140 @@ function SessionRow({
   session: Schedule;
   isFocused: boolean;
 }) {
-  const statusLabel = session.statusLabel;
-  const statusPalette = getEventStatusPalette(session.status);
+  const nameWeight = session.type === "race" || isFocused ? "600" : "500";
+  const nameColor = session.type === "race" ? "fg" : "fg.muted";
 
   return (
-    <Flex
-      align="center"
-      justify="space-between"
-      gap="3"
+    <Box
       borderTopWidth="1px"
       borderColor="border"
-      borderLeftWidth={isFocused ? "3px" : "0"}
-      borderLeftColor={isFocused ? "f1.500" : "transparent"}
+      borderLeftWidth={isFocused ? { base: "2px", md: "3px" } : "0"}
+      borderLeftColor="f1.500"
       bg={isFocused ? "bg.subtle" : "transparent"}
-      px="3"
-      py="2.5"
+      py={{ base: 2, md: 2.5 }}
+      pl={{ base: isFocused ? 2 : 0, md: 3 }}
+      pr={{ base: 0, md: 3 }}
     >
-      <Box minW="0">
+      <Flex
+        display={{ base: "flex", md: "none" }}
+        align="flex-start"
+        justify="space-between"
+        gap="2"
+        minW="0"
+      >
+        <Flex align="center" gap="2" minW="0" flex="1" overflow="hidden">
+          <Text
+            fontSize="xs"
+            fontWeight={nameWeight}
+            color={nameColor}
+            truncate
+          >
+            {session.name}
+          </Text>
+          <Text
+            fontFamily="mono"
+            fontSize="10px"
+            color="fg.muted"
+            flexShrink={0}
+          >
+            {formatSessionStartTime(session.startTime)}
+          </Text>
+        </Flex>
+        <SessionStatusBadges session={session} isFocused={isFocused} />
+      </Flex>
+
+      <Flex
+        display={{ base: "none", md: "flex" }}
+        align="flex-start"
+        justify="space-between"
+        gap="2"
+        minW="0"
+      >
         <Text
+          minW="0"
+          flex="1"
           fontSize="sm"
-          color={session.type === "race" ? "fg" : "fg.muted"}
-          fontWeight={session.type === "race" || isFocused ? "600" : "400"}
+          fontWeight={nameWeight}
+          color={nameColor}
+          lineHeight="1.3"
           truncate
         >
           {session.name}
         </Text>
-        <Text mt="1" fontFamily="mono" fontSize="10px" color="fg.muted">
-          {formatDateTime(session.startTime)}
-        </Text>
-      </Box>
-      <Flex flexShrink="0" align="center" justify="end" gap="1" wrap="wrap">
-        <Badge colorPalette={statusPalette} variant="subtle" fontSize="9px">
-          {statusLabel}
-        </Badge>
-        {isFocused && (
-          <Badge colorPalette="f1" fontSize="9px">
-            {session.status === "ongoing" ? "Agora" : "Proxima"}
-          </Badge>
-        )}
+        <SessionStatusBadges session={session} isFocused={isFocused} />
       </Flex>
-    </Flex>
+      <Text
+        mt="1"
+        fontFamily="mono"
+        fontSize="xs"
+        color="fg.muted"
+        display={{ base: "none", md: "block" }}
+      >
+        {formatDateTime(session.startTime)}
+      </Text>
+      {session.weather && (
+        <Box mt={{ base: 1, md: 2 }}>
+          <Box display={{ base: "block", md: "none" }}>
+            <WeatherSummary weather={session.weather} compact />
+          </Box>
+          <Box display={{ base: "none", md: "block" }}>
+            <WeatherSummary weather={session.weather} />
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+function ScheduleList({
+  schedule,
+  focusedSessionId,
+}: {
+  schedule: Schedule[];
+  focusedSessionId?: string;
+}) {
+  return (
+    <Stack gap="0">
+      {schedule.map((session) => (
+        <SessionRow
+          key={session.id}
+          session={session}
+          isFocused={focusedSessionId === session.id}
+        />
+      ))}
+    </Stack>
+  );
+}
+
+function EventWeatherStrip({ race }: { race: RaceWeek }) {
+  if (!race.forecast?.days.length) return null;
+
+  return (
+    <Box
+      borderTopWidth="1px"
+      borderColor="border"
+      pt="4"
+      mt="1"
+      w="full"
+    >
+      <Flex align="baseline" justify="space-between" gap="3" mb="1">
+        <Text
+          fontFamily="mono"
+          fontSize="11px"
+          letterSpacing="0.14em"
+          color="f1.500"
+          textTransform="uppercase"
+          fontWeight="600"
+        >
+          Previsão do tempo
+        </Text>
+      </Flex>
+      <Box>
+        {race.forecast.days.map((day) => (
+          <ForecastDayRow key={day.date} date={day.date} weather={day.weather} />
+        ))}
+      </Box>
+    </Box>
   );
 }
 
@@ -264,6 +384,7 @@ export function NextRacePanel({
               {formatDateWithoutTime(race.dateStart)} a{" "}
               {formatDateWithoutTime(race.dateEnd)}
             </Text>
+            <EventWeatherStrip race={race} />
             <Button asChild size="sm" variant="outline" alignSelf="start">
               <RouterLink to={`/meetings/${race.id}`}>Ver detalhes</RouterLink>
             </Button>
@@ -285,7 +406,7 @@ export function NextRacePanel({
             pt={compact ? 4 : 0}
           >
             <Text
-              mb="3"
+              mb={{ base: 2, md: 3 }}
               fontFamily="mono"
               fontSize="11px"
               letterSpacing="0.14em"
@@ -294,15 +415,10 @@ export function NextRacePanel({
             >
               Programação
             </Text>
-            <Stack gap="0">
-              {race.schedule.map((session) => (
-                <SessionRow
-                  key={session.id}
-                  session={session}
-                  isFocused={focusedSession?.id === session.id}
-                />
-              ))}
-            </Stack>
+            <ScheduleList
+              schedule={race.schedule}
+              focusedSessionId={focusedSession?.id}
+            />
           </Box>
         </Flex>
       </Box>
