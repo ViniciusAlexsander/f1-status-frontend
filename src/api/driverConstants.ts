@@ -374,7 +374,7 @@ export const DRIVERS_DATA: DriverData[] = [
     firstName: "Rafael",
     lastName: "Câmara",
     code: "CAM",
-    number: 50,
+    number: 51,
     teams: [
       {
         id: "af7690d3-cecd-45fa-b3ea-8876a0f65587",
