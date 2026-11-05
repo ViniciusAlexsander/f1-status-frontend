@@ -9,7 +9,6 @@ import {
   LivePanel,
   LastRacePanel,
   NextRacePanel,
-  ResultsPanel,
 } from "./components/HomePanels";
 import { getFocusedSession } from "./components/homeUtils";
 
@@ -76,6 +75,8 @@ export default function F1Dashboard() {
               races={raceData.races}
               focusedRaceId={activeRace?.id}
             />
+
+            {/* <ResultsPanel races={finished} /> */}
           </Stack>
           <Stack gap="4" minW="0">
             <Stack gap="4">
