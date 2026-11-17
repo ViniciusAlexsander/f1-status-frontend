@@ -1,6 +1,7 @@
 import { RaceControlPanel } from "./components/RaceControlPanel";
 import { LiveTimingHeader } from "./components/LiveTimingHeader";
 import { LiveTimingLeaderboard } from "./components/LiveTimingLeaderboard";
+import { TrackMap } from "./components/TrackMap";
 import { UpcomingSessionBanner } from "./components/UpcomingSessionBanner";
 import { useDriversLiveTimingData } from "@/hooks/useDriversLiveTimingData";
 import { useLiveTimingUpdates } from "@/hooks/useLiveTimingUpdates";
@@ -8,7 +9,7 @@ import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
 import { useSessionResults } from "@/hooks/useSessionResults";
 import type { DriverPenalty } from "@/api/types/livetiming";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Grid, Stack } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useLiveTimingPageState } from "./hooks/useLiveTimingPageState";
 import { useRaceControlNotifications } from "./hooks/useRaceControlNotifications";
@@ -124,13 +125,32 @@ export default function LiveTiming() {
           unreadMessages={unreadMessages}
           onOpenRaceControl={openHistory}
         />
-        <LiveTimingLeaderboard
-          drivers={drivers}
-          penaltiesByDriver={penaltiesByDriver}
-        />
-        <Box ref={historyRef}>
-          <RaceControlPanel messages={messages} />
-        </Box>
+        <Grid
+          templateColumns={{
+            base: "1fr",
+            lg: "minmax(0, 1.35fr) minmax(0, 1fr) minmax(240px, 0.85fr)",
+          }}
+          gap={{ base: 2, md: 7 }}
+          alignItems={{ base: "stretch", lg: "start" }}
+        >
+          <LiveTimingLeaderboard
+            drivers={drivers}
+            penaltiesByDriver={penaltiesByDriver}
+          />
+          <TrackMap
+            location={
+              raceData?.currentRace?.location ?? raceData?.nextRace?.location
+            }
+            fallbackName={
+              sessionName !== "Sessão atual"
+                ? sessionName
+                : (raceData?.currentRace?.name ?? raceData?.nextRace?.name)
+            }
+          />
+          <Box ref={historyRef} minH={{ lg: 0 }} h={{ lg: "full" }} overflow="hidden">
+            <RaceControlPanel messages={messages} />
+          </Box>
+        </Grid>
       </Stack>
     </Box>
   );

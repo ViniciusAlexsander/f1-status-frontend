@@ -8,7 +8,7 @@ type RaceControlPanelProps = {
 
 export function RaceControlPanel({ messages }: RaceControlPanelProps) {
   return (
-    <Box id="race-control-history" scrollMarginTop="24" py={{ base: 2, md: 8 }}>
+    <Box id="race-control-history" scrollMarginTop="24" py={{ base: 2, lg: 0 }} h={{ lg: "full" }}>
       <Flex align="center" justify="space-between" mb={{ base: 1.5, md: 4 }} gap="2">
         <Flex align="center" gap={{ base: 2, md: 3 }}>
           <Box color="f1.500" fontSize="xl"><RiMegaphoneLine /></Box>
@@ -31,7 +31,7 @@ export function RaceControlPanel({ messages }: RaceControlPanelProps) {
       ) : (
         <Stack
           gap="2"
-          maxH={{ base: "300px", md: "390px" }}
+          maxH={{ base: "300px", md: "390px", lg: "70vh" }}
           overflowY="auto"
           overscrollBehaviorY="contain"
           pr="1"
