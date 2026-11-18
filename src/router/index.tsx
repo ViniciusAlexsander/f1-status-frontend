@@ -6,6 +6,29 @@ import { AppLayout } from "@/pages/AppLayout";
 import Standings from "@/pages/Standings";
 import LiveTiming from "@/pages/LiveTiming";
 import SessionDetails from "@/pages/SessionDetails";
+import { GuideArticlePage } from "@/pages/content/GuideArticlePage";
+import { StaticContentPage } from "@/pages/content/StaticContentPage";
+
+const contentRoutes = [
+  { path: "/sobre", element: <StaticContentPage /> },
+  { path: "/contato", element: <StaticContentPage /> },
+  { path: "/privacidade", element: <StaticContentPage /> },
+  { path: "/como-funciona", element: <StaticContentPage /> },
+  { path: "/guias", element: <StaticContentPage /> },
+  { path: "/guias/:slug", element: <GuideArticlePage /> },
+];
+
+const devRoutes = import.meta.env.DEV
+  ? [
+      {
+        path: "/dev/live-topics",
+        lazy: async () => {
+          const module = await import("@/pages/Dev/LiveTopicsDev");
+          return { Component: module.default };
+        },
+      },
+    ]
+  : [];
 
 export const router = createBrowserRouter([
   {
@@ -31,10 +54,12 @@ export const router = createBrowserRouter([
         path: "/live",
         element: <LiveTiming />,
       },
+      ...contentRoutes,
+      ...devRoutes,
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ]);

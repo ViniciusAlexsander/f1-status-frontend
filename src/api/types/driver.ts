@@ -3,6 +3,7 @@ export interface TeamData {
   name: string;
   shortName: string;
   color: string;
+  textColor: string;
 }
 
 export interface DriverData {

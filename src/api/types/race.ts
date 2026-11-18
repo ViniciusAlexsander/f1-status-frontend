@@ -9,6 +9,26 @@ export interface Country {
   threeCode: string | null;
 }
 
+export interface WeatherSnapshot {
+  t_max: number;
+  t_min: number;
+  precip_mm: number;
+  precip_prob: number;
+  weather_code: number;
+  wind_speed: number;
+  wind_gust: number;
+  wind_dir: number;
+}
+
+export interface ForecastDay {
+  date: string;
+  weather: WeatherSnapshot;
+}
+
+export interface RaceForecast {
+  days: ForecastDay[];
+}
+
 export interface Location {
   id: string;
   name: string;
@@ -16,16 +36,22 @@ export interface Location {
   country: Country;
 }
 
-export interface Schedule {
+export interface ApiSchedule {
   id: string;
   name: string;
   type: ScheduleType;
   startTime: string;
   endTime: string;
   status: EventStatus;
+  weather?: WeatherSnapshot | null;
 }
 
-export interface RaceWeek {
+export interface Schedule extends ApiSchedule {
+  statusLabel: string;
+  weather?: WeatherSnapshot | null;
+}
+
+export interface ApiRaceWeek {
   id: string;
   name: string;
   dateStart: string;
@@ -33,7 +59,14 @@ export interface RaceWeek {
   status: EventStatus;
   location: Location;
   sportId: string;
+  schedule: ApiSchedule[];
+  forecast?: RaceForecast | null;
+}
+
+export interface RaceWeek extends Omit<ApiRaceWeek, "schedule"> {
+  statusLabel: string;
   schedule: Schedule[];
+  forecast?: RaceForecast | null;
 }
 
 export interface PaginationMeta {
@@ -43,6 +76,12 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
+export interface ApiRaceListData {
+  races: ApiRaceWeek[];
+  nextRace: ApiRaceWeek | null;
+  currentRace: ApiRaceWeek | null;
+}
+
 export interface RaceListData {
   races: RaceWeek[];
   nextRace: RaceWeek | null;
@@ -50,6 +89,6 @@ export interface RaceListData {
 }
 
 export interface RaceListResponse {
-  data: RaceListData;
+  data: ApiRaceListData;
   meta: PaginationMeta;
 }

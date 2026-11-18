@@ -25,7 +25,7 @@ export function NavLinks({ variant, onNavigate }: NavLinksProps) {
         {({ isActive }) => (
           <Button
             variant={isActive ? "subtle" : "ghost"}
-            colorPalette={isActive ? "teal" : "gray"}
+            colorPalette={isActive ? "f1" : "gray"}
             justifyContent={variant === "mobile" ? "flex-start" : "center"}
             minH={variant === "mobile" ? "44px" : undefined}
             w={variant === "mobile" ? "full" : undefined}

@@ -1,5 +1,10 @@
 import type { IconType } from "react-icons";
-import { RiHomeLine, RiTrophyLine } from "react-icons/ri";
+import {
+  RiBookOpenLine,
+  RiHomeLine,
+  RiRadioLine,
+  RiTrophyLine,
+} from "react-icons/ri";
 
 export type NavItem = {
   label: string;
@@ -11,5 +16,27 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { label: "Início", path: "/", end: true, icon: RiHomeLine },
   { label: "Classificação", path: "/standings", icon: RiTrophyLine },
-  // { label: "Ao vivo", path: "/live", icon: RiLiveLine },
+  { label: "Ao vivo", path: "/live", icon: RiRadioLine },
+  { label: "Guias", path: "/guias", icon: RiBookOpenLine },
 ];
+
+export const FOOTER_ITEMS: Array<{ label: string; path: string }> = [
+  { label: "Sobre", path: "/sobre" },
+  { label: "Como funciona", path: "/como-funciona" },
+  { label: "Privacidade", path: "/privacidade" },
+  { label: "Contato", path: "/contato" },
+];
+
+export const CONTENT_PATH_PREFIXES = [
+  "/sobre",
+  "/contato",
+  "/privacidade",
+  "/como-funciona",
+  "/guias",
+] as const;
+
+export function isContentPath(pathname: string): boolean {
+  return CONTENT_PATH_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}

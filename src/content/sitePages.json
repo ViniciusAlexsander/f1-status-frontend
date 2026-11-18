@@ -1,0 +1,233 @@
+{
+  "pages": [
+    {
+      "path": "/",
+      "kind": "intro",
+      "title": "F1 Status — calendário, classificação e live timing (não oficial)",
+      "description": "Acompanhe a temporada com calendário, classificação e live timing. Site independente, sem vínculo com a Formula 1.",
+      "paragraphs": [
+        "O F1 Status reúne, em um só lugar, o calendário da temporada, a classificação de pilotos e construtores e uma tela de live timing para quem quer acompanhar o que acontece na pista sem abrir várias abas. O objetivo é explicar o fim de semana de forma direta: o que vem a seguir, quem lidera o campeonato e, quando houver sessão em andamento, como a ordem está se formando na hora.",
+        "Este site é um projeto independente. Não somos afiliados à Formula 1, à Formula One Management, à Liberty Media nem a equipes ou patrocinadores. Os dados de sessão, clima e resultados podem atrasar em relação à transmissão oficial e servem como referência para fãs, não como fonte regulamentar.",
+        "Se você está chegando agora, comece pelos guias: eles descrevem o que é cada sessão do fim de semana, como ler gaps no timing, o significado de bandeiras e safety car, e como usar o painel no domingo de corrida. A navegação no topo leva à classificação e ao live timing; o rodapé concentra páginas sobre o projeto, privacidade e contato."
+      ]
+    },
+    {
+      "path": "/standings",
+      "kind": "intro",
+      "title": "Classificação da temporada",
+      "description": "Tabela de pilotos e construtores da temporada, com contexto de como os pontos funcionam no F1 Status.",
+      "paragraphs": [
+        "A página de classificação mostra a ordem atual dos pilotos e das equipes na temporada. Os pontos acumulados mudam depois de sprints e corridas; empates são resolvidos pelos melhores resultados, como no regulamento esportivo em vigor. Use esta tela para ver quem está na luta pelo título e quem precisa pontuar no próximo fim de semana.",
+        "Os números aqui acompanham o calendário publicado no início, mas podem levar alguns minutos para refletir o resultado oficial após a bandeirada. Se uma sessão ainda está em andamento, o live timing é o lugar certo para a ordem momentânea; a classificação do campeonato só se atualiza quando o resultado entra na nossa base."
+      ]
+    },
+    {
+      "path": "/live",
+      "kind": "intro",
+      "title": "Live timing",
+      "description": "Painel de tempos ao vivo, mapa e mensagens de direção de prova. Pode haver atraso em relação à TV.",
+      "paragraphs": [
+        "O live timing concentra a ordem dos carros, intervalos, mapa da pista e mensagens de direção de prova quando há sessão em andamento. Fora de sessão, a tela aponta o próximo compromisso do calendário. Os dados chegam de fontes de timing e podem atrasar alguns segundos em relação à transmissão oficial — não substituem a cronometragem da prova."
+      ]
+    },
+    {
+      "path": "/sobre",
+      "kind": "article",
+      "title": "Sobre o F1 Status",
+      "description": "O que é o F1 Status, quem opera o site e o aviso de que o projeto não é oficial.",
+      "paragraphs": [
+        "O F1 Status nasceu para quem acompanha a temporada e quer um painel limpo: próximo evento, classificação e, nos horários de pista, uma leitura do timing sem a interface de uma transmissão completa. Não tentamos substituir a TV, o app oficial nem os canais das equipes. O recorte é prático — o que está acontecendo agora e o que vem no fim de semana.",
+        "Operamos o site como projeto independente. Não há licença comercial da marca Formula 1, não vendemos ingressos e não representamos a Formula One Management nem a Liberty Media. Logotipos, nomes de circuitos e de equipes aparecem apenas para identificar sessões e resultados de domínio público do campeonato.",
+        "Os dados de calendário, resultados e live timing vêm de APIs e fluxos de cronometragem de terceiros. Eles podem falhar, atrasar ou divergir do resultado homologado. Em caso de dúvida sobre pontuação, penalidades ou classificação oficial, a referência continua sendo o regulamento e os comunicados da direção de prova.",
+        "Além dos painéis, publicamos guias em português sobre o formato do fim de semana, leitura de gaps, bandeiras e pneus. Esse texto existe para o visitante entender o que está vendo na tela, não para cobrir bastidores ou palpite de grid.",
+        "Se encontrar erro de horário, sessão duplicada ou classificação desatualizada, use a página de contato. Corrigimos o que estiver ao nosso alcance no software e na apresentação dos dados. Sugestões de novos recortes — por exemplo, mais contexto de pneus ou de direção de prova — também são bem-vindas, desde que caibam no propósito de um status da temporada, não de um portal de notícias."
+      ],
+      "related": [
+        { "href": "/como-funciona", "label": "Como o site funciona" },
+        { "href": "/contato", "label": "Falar com o projeto" },
+        { "href": "/privacidade", "label": "Privacidade" }
+      ]
+    },
+    {
+      "path": "/contato",
+      "kind": "article",
+      "title": "Contato",
+      "description": "Como falar com quem opera o F1 Status sobre erros, privacidade e o projeto.",
+      "paragraphs": [
+        "Use o e-mail abaixo para reportar horário errado, falha no live timing, problema de acessibilidade ou dúvida sobre privacidade e publicidade. Não atendemos pedidos de ingresso, credencial de imprensa ou comentário oficial de equipe — este não é um canal da Formula 1.",
+        "Quando escrever sobre um bug, inclua a página (início, classificação, live ou um guia), o horário aproximado e o que você esperava ver. Isso reduz o vai-e-vem e ajuda a reproduzir o caso com a sessão certa.",
+        "Mensagens sobre dados pessoais, cookies ou Google AdSense são tratadas com prioridade. Não pedimos senha, código de verificação nem documento por e-mail. O site não tem área logada de fã.",
+        "O tempo de resposta varia conforme o calendário de corridas. Em fim de semana de Grande Prêmio o volume sobe e a prioridade é manter o painel no ar; nos demais dias respondemos conforme a fila."
+      ],
+      "related": [
+        { "href": "/sobre", "label": "Sobre o F1 Status" },
+        { "href": "/privacidade", "label": "Privacidade" }
+      ]
+    },
+    {
+      "path": "/privacidade",
+      "kind": "article",
+      "title": "Política de privacidade",
+      "description": "Como o F1 Status trata dados de navegação, cookies e Google AdSense.",
+      "paragraphs": [
+        "Esta política descreve como o F1 Status trata informações quando você visita o site. Não exigimos cadastro, não vendemos lista de e-mails e não criamos perfil nominal de fã. O endereço de contato do operador está na página de contato.",
+        "Ao abrir as páginas, o servidor e a rede de entrega podem registrar dados técnicos usuais de um site público: endereço IP, tipo de navegador, idioma, horário do pedido e URL visitada. Esses registros servem para manter o serviço no ar, medir erro e abuso e entender, de forma agregada, quais telas são usadas. Não usamos esses logs para decidir crédito, emprego ou seguro.",
+        "O calendário, a classificação e o live timing são buscados em APIs nossas ou de parceiros de cronometragem. Essa consulta não identifica você junto às equipes ou à organização do campeonato. O conteúdo dos guias é estático e não depende de login.",
+        "Quando a conta de publicidade estiver ativa, o site carrega o Google AdSense (publisher ca-pub-4427428739318751). O Google pode usar cookies ou identificadores semelhantes para veicular anúncios, medir cliques e, quando permitido na sua região, personalizar criativos. O F1 Status não controla os anúncios de terceiros nem os dados que o Google associa à sua conta Google, se você estiver logado nesse serviço.",
+        "Você pode ler como o Google usa informações em sites de parceiros em https://policies.google.com/technologies/partner-sites e ajustar anúncios nas configurações da sua Conta do Google. No navegador, também é possível bloquear cookies de terceiros; isso pode reduzir a relevância dos anúncios ou impedir que alguns blocos carreguem, mas o calendário e o timing continuam acessíveis.",
+        "Se o operador usar estatística de audiência (por exemplo, um medidor de páginas vistas), os dados são agregados. Não combinamos essa medição com nome, telefone ou documento. Não há comentários públicos que exijam e-mail visível para outros visitantes.",
+        "Não vendemos dados pessoais. Podemos divulgar informação se a lei exigir ou para defender o site contra abuso. Prestadores de hospedagem e CDN processam tráfego só para entregar as páginas.",
+        "Cookies próprios, se existirem, limitam-se a preferência de tema (claro/escuro) ou equivalente de interface. Não são usados para rastrear você em outros sites.",
+        "Para pedir acesso, correção ou exclusão de algum dado que tenhamos associado ao seu contato por e-mail, escreva pela página de contato. Se a base só tiver logs técnicos rotativos, podemos não conseguir localizar um visitante anônimo só pelo IP antigo.",
+        "Esta política pode mudar se o site ganhar novos recursos de conta, newsletter ou redes de anúncio. A data de referência é a da publicação desta página. O uso continuado depois de uma alteração relevante significa que a versão atualizada passou a valer para as visitas seguintes."
+      ],
+      "related": [
+        { "href": "/contato", "label": "Contato" },
+        { "href": "/sobre", "label": "Sobre" }
+      ]
+    },
+    {
+      "path": "/como-funciona",
+      "kind": "article",
+      "title": "Como o F1 Status funciona",
+      "description": "De onde vêm calendário, classificação e live timing, e o que pode atrasar.",
+      "paragraphs": [
+        "O F1 Status é um aplicativo web. A home mostra o próximo compromisso, o calendário da temporada e um recorte da classificação ou da sessão ao vivo. A classificação lista pilotos e construtores. O live timing abre o painel de ordem, mapa e mensagens quando há atividade na pista.",
+        "O calendário e os resultados históricos vêm da nossa API, que consolida reuniões, sessões (treinos, classificação, sprint e corrida) e status: agendada, em andamento ou encerrada. Horários aparecem no fuso que o navegador usa. Confira sempre o horário local do circuito se for ao autódromo.",
+        "O live timing consome fluxos de cronometragem: lista de carros, tempos, pneus, clima, status de pista e recados da direção de prova. Esses fluxos são feitos para atualizar várias vezes por segundo. Rede lenta, aba em segundo plano ou instabilidade na origem deixam a tela atrás da TV. Trate o painel como apoio, não como cronometragem oficial.",
+        "Depois da bandeirada, a ordem do timing ainda pode mudar com penalidades aplicadas na volta de desaceleração ou na análise posterior. A tabela de campeonato no site só muda quando o resultado entra na API. Se os números da TV e os nossos divergirem por alguns minutos, espere a atualização antes de concluir que houve erro nosso.",
+        "Os guias complementam os painéis com texto contínuo: formato do fim de semana, leitura de intervalos, bandeiras e safety car, compostos de pneu e um roteiro de uso no domingo. Eles não tentam cobrir o regulamento técnico inteiro. Quando uma regra muda entre temporadas, revisamos o texto; até lá, o regulamento esportivo publicado pela categoria prevalece.",
+        "Publicidade, quando houver slot configurado, aparece em páginas com texto e em algumas telas de calendário ou classificação. A tela de live timing evita anúncios no grid para não cobrir tempos e mapa. Nada no site pede que você clique em anúncio para ver dado de corrida."
+      ],
+      "related": [
+        { "href": "/guias", "label": "Guias" },
+        { "href": "/live", "label": "Live timing" },
+        { "href": "/standings", "label": "Classificação" }
+      ]
+    },
+    {
+      "path": "/guias",
+      "kind": "hub",
+      "title": "Guias do F1 Status",
+      "description": "Textos para ler o fim de semana: sessões, gaps, bandeiras, pneus e o painel no domingo.",
+      "paragraphs": [
+        "Estes guias explicam o que os painéis do F1 Status estão mostrando. Não são cobertura jornalística nem palpite de classificação. A ideia é chegar no treino, na classificação ou na corrida sabendo o que é cada sessão, o que significa um intervalo de um segundo e por que a pista às vezes fica amarela ou atrás do safety car.",
+        "Leia na ordem que fizer sentido para você. Quem nunca acompanhou um fim de semana inteiro pode começar pelas sessões. Quem já vê corrida todo domingo pode pular para gaps, bandeiras ou o roteiro de uso do site no dia da prova. Os textos se cruzam: pneus influenciam a estratégia que você vê no timing; bandeiras explicam por que o relógio de sessão às vezes parece parado.",
+        "O regulamento muda. Sprint, pontos extras e alocação de pneus já foram diferentes em temporadas recentes. Quando o texto citar um formato, trate-o como o recorte que usamos para explicar a tela, e confira o regulamento do ano se for tomar decisão com base em regra — por exemplo, quantos jogos cada piloto tem no fim de semana."
+      ]
+    },
+    {
+      "path": "/guias/sessoes-do-fim-de-semana",
+      "kind": "article",
+      "title": "O que é cada sessão do fim de semana",
+      "description": "Treinos livres, classificação, sprint e corrida: o que cada sessão testa e o que o F1 Status destaca.",
+      "paragraphs": [
+        "Um fim de semana típico de Grande Prêmio não é só a corrida de domingo. Entre a quinta e o sábado os times usam a pista para acertar acerto de carro, entender pneu e definir o grid. No F1 Status o calendário lista cada compromisso com horário e status. Esta página traduz o que aqueles nomes curtos significam quando você abre o live timing.",
+        "Os treinos livres (em geral FP1, FP2 e FP3) são sessões cronometradas em que a ordem da tabela importa menos do que o programa de cada equipe. Há voltas longas para simular corrida, voltas lançadas para ver ritmo de classificação e testes de asa ou de mapa de motor. Um tempo absurdo no FP1 não garante pole; um carro lento no FP2 pode estar cheio de combustível. No painel, use os treinos para ver quem está na pista, quem foi para o box e se a sessão foi interrompida.",
+        "A classificação decide a ordem de largada da prova principal (e, em fins de semana com sprint, há uma classificação específica para essa corrida curta). O formato usual divide a sessão em segmentos que vão eliminando os carros mais lentos até um grupo final disputar a pole. Por isso a tabela muda de caráter: no começo quase todo mundo marca tempo; no fim, poucas voltas lançadas separam a primeira fila. Uma bandeira vermelha no último minuto pode impedir alguém de completar a volta que o colocaria no Q3.",
+        "Alguns eventos incluem sprint: uma corrida mais curta, em geral no sábado, com pontos para uma fatia do pelotão. A sprint não substitui o Grande Prêmio, mas altera o ritmo do fim de semana — menos treino livre, mais classificação comprimida. No calendário do site a sprint aparece como sessão própria, com status independente da corrida de domingo.",
+        "A corrida é a sessão em que a classificação do campeonato se mexe de verdade para a maioria dos pontos. Largada, janelas de pit, safety car e bandeira vermelha mudam a leitura do timing: o líder pode ter o melhor tempo de volta e mesmo assim estar sob pressão de pneu no fim. Depois da bandeirada, espere possíveis penalidades de tempo antes de cravar o resultado na tabela de pilotos.",
+        "Quando uma sessão está agendada, o F1 Status mostra a contagem e o contexto do evento. Quando está em andamento, o live timing passa a receber ordem, intervalos e mensagens. Quando encerra, o status do calendário muda e, mais tarde, os pontos entram na classificação. Se o painel ainda disser que a sessão está ao vivo alguns minutos após a TV ter encerrado, recarregue; o fluxo de timing às vezes demora a fechar o estado."
+      ],
+      "related": [
+        { "href": "/guias/como-ler-gaps", "label": "Como ler gaps" },
+        {
+          "href": "/guias/acompanhar-no-domingo",
+          "label": "Usar o site no domingo"
+        },
+        { "href": "/como-funciona", "label": "Como o site funciona" }
+      ]
+    },
+    {
+      "path": "/guias/como-ler-gaps",
+      "kind": "article",
+      "title": "Como ler gaps e intervalos no live timing",
+      "description": "Diferença para o líder, intervalo para o carro da frente e por que o número pisca ou some.",
+      "paragraphs": [
+        "No live timing, o número ao lado de cada piloto quase nunca é o tempo de volta isolado. O que mais se usa na corrida é o intervalo: quanto aquele carro está atrás do da frente, ou quanto está atrás do líder. Entender essa diferença evita achar que alguém “perdeu dois segundos” quando na verdade só abriu para o perseguidor imediato.",
+        "O gap para o líder responde à pergunta “a que distância está o pelotão”. Útil para ver se um piloto está no mesmo grupo ou se já tomou uma volta. Já o intervalo para o carro imediatamente à frente responde “posso atacar agora?”. Um intervalo de duas décimas no fim de reta é outro cenário; três segundos com pneu mais novo ainda pode ser caçada, mas não é disputa de freada nesta curva.",
+        "Em classificação o sentido muda. A tabela ordena pelo melhor tempo da sessão ou do segmento. A diferença para a pole (ou para o corte de eliminação) importa mais do que o intervalo “de corrida”. Um piloto pode estar a um milésimo da zona de corte e, mesmo assim, ter uma volta anterior bem mais lenta. Olhe o status da volta — lançada, de preparação ou de box — antes de concluir que o carro não tem ritmo.",
+        "Pit stops distorcem a foto por algumas voltas. Quem para some da sequência “limpa” e volta com um buraco enorme que não é ritmo de pista, é o tempo no box mais o tráfego na saída. Safety car e volta de safety car comprimem os intervalos: o pelotão junta, os gaps de corrida aberta deixam de valer e a ordem pode mudar na relargada. Bandeira vermelha congela boa parte da cronometragem até a retomada.",
+        "No F1 Status a coluna de timing e o mapa devem ser lidos juntos. O mapa mostra onde o carro está no traçado; o número na tabela diz a distância em tempo. Um perseguidor no mesmo setor do líder, com intervalo caindo a cada atualização, está no ataque. Um intervalo estável em uma segunda e meia costuma ser gestão de pneu ou ar sujo, não necessariamente problema no carro.",
+        "Atrasos de alguns segundos em relação à TV são normais. Se o narrador grita ultrapassagem e a tabela ainda não virou, espere o próximo pacote de dados. Não force recarregar a cada instância: isso pode piorar a fila. Use o painel como confirmação da ordem, não como substituto do replay da curva."
+      ],
+      "related": [
+        {
+          "href": "/guias/bandeiras-safety-car",
+          "label": "Bandeiras e safety car"
+        },
+        { "href": "/live", "label": "Abrir o live timing" },
+        {
+          "href": "/guias/sessoes-do-fim-de-semana",
+          "label": "Sessões do fim de semana"
+        }
+      ]
+    },
+    {
+      "path": "/guias/bandeiras-safety-car",
+      "kind": "article",
+      "title": "Bandeiras, safety car e VSC",
+      "description": "O que mudam bandeira amarela, vermelha, safety car e virtual safety car no timing e na pista.",
+      "paragraphs": [
+        "A direção de prova fala com os pilotos por bandeira, painel luminoso e rádio. No F1 Status essas decisões aparecem como status de pista e como mensagens no painel de race control. Elas explicam por que de repente ninguém marca volta lançada ou por que os intervalos desabam.",
+        "Bandeira verde indica pista livre. Amarela pede redução de ritmo no trecho afetado: há risco à frente, ultrapassar na zona amarela é infração. Amarela dupla é mais severa — o trecho exige desaceleração clara, muitas vezes com carro parado ou oficiais na área de escape. A tabela pode mostrar setores em amarelo; um tempo de volta “ruim” ali não é, sozinho, prova de que o carro perdeu rendimento.",
+        "Bandeira vermelha interrompe a sessão. Os carros voltam ao box, o relógio pode ser ajustado e a classificação ou a corrida só retomam quando a direção autorizar. Vermelha no Q3 ou no fim da prova muda estratégia inteira: quem estava na volta lançada perde a tentativa; na corrida, a ordem de restart segue o procedimento do regulamento da temporada, não o palpite da transmissão.",
+        "Safety car entra quando o risco não se resolve só com amarelo. O pelotão junta atrás do carro de segurança, os gaps de corrida aberta deixam de existir e a janela de pit muda: parar na hora certa do safety car pode ganhar posições de graça; parar na hora errada pode perder o pacote. Virtual safety car (VSC) pede um delta de tempo sem o carro de segurança na pista — os intervalos se esticam de forma controlada, mas a ordem em geral se mantém se ninguém for ao box.",
+        "Bandeira azul avisa que um retardatário será ultrapassado por carros na volta do líder. Não é penalidade automática; ignorar de forma reiterada pode gerar investigação. Bandeira preta e laranja indica problema técnico que obriga o carro a ir ao box. Xadrez encerra a sessão.",
+        "Quando o painel de mensagens dispara vários avisos em sequência — debris, amarelo no setor 2, VSC deployed — leia na ordem. O mapa e o status de pista resumem o estado atual; o histórico do race control guarda o porquê. Depois de “VSC ending” ou “green”, os gaps voltam a ser de corrida e a leitura de ataque faz sentido de novo."
+      ],
+      "related": [
+        { "href": "/guias/como-ler-gaps", "label": "Como ler gaps" },
+        {
+          "href": "/guias/acompanhar-no-domingo",
+          "label": "Usar o site no domingo"
+        },
+        { "href": "/live", "label": "Live timing" }
+      ]
+    },
+    {
+      "path": "/guias/compostos-de-pneus",
+      "kind": "article",
+      "title": "Compostos de pneus e o que olhar no painel",
+      "description": "Macio, médio e duro, stints e por que a cor do pneu muda a leitura do timing.",
+      "paragraphs": [
+        "O fornecedor de pneus leva ao fim de semana um jogo de compostos secos, em geral identificados por faixa de cor: o mais macio gruda mais e cai mais depressa; o mais duro aguenta stint longo e costuma ser mais lento na volta isolada. Há ainda intermediário e chuva quando o asfalto molha. O F1 Status mostra o composto atual e, quando o fluxo traz, o histórico de stints — quantas voltas naquele jogo.",
+        "Na classificação quase todo mundo busca o composto mais macio disponível naquele segmento, porque a volta lançada vale o grid. Exceções existem: pista muito abrasiva, temperatura alta ou uma regra específica da temporada que obrigue a largar com o pneu da melhor volta em determinada fase. Não trate a cor da classificação como a cor da corrida.",
+        "Na prova, a estratégia é uma troca entre ritmo e número de paradas. Um stint longo de composto duro pode parecer lento na tabela por vinte voltas e mesmo assim ser o caminho do pódio se o rival fizer duas paradas e cair no tráfego. Por isso o intervalo sozinho mente: some o intervalo com a idade do pneu. Perseguidor com pneu dez voltas mais novo e intervalo caindo é ameaça real.",
+        "Undercut é parar antes do rival para usar pneu novo em pista livre e “ganhar” a posição quando o outro parar. Overcut é ficar fora, aproveitar pista limpa enquanto o rival enfrenta tráfego na saída do box. Safety car no meio da janela bagunça os dois planos. O painel de stints ajuda a ver quem já usou o macio e quem ainda tem um jogo para o fim.",
+        "Pista molhada inverte prioridades. Intermediário é a ponte; chuva extrema pede o pneu de chuva pesada. Cruzar o ponto em que o asfalto seca com o composto errado destrói o tempo de volta em poucas curvas. Se o live timing mostrar troca generalizada para intermediário, olhe também o clima no recorte de temperatura e precipitação — o número do gap vai oscilar até o pelotão convergir no mesmo composto.",
+        "A alocação (quantos jogos cada piloto tem no fim de semana) muda conforme o regulamento do ano. O guia não substitui a ficha da etapa. Use o que aparece na tela — composto agora, voltas no stint — como fato; use este texto só para interpretar por que aquele fato importa na ordem que você está vendo."
+      ],
+      "related": [
+        { "href": "/guias/como-ler-gaps", "label": "Como ler gaps" },
+        {
+          "href": "/guias/sessoes-do-fim-de-semana",
+          "label": "Sessões do fim de semana"
+        },
+        { "href": "/como-funciona", "label": "Como o site funciona" }
+      ]
+    },
+    {
+      "path": "/guias/acompanhar-no-domingo",
+      "kind": "article",
+      "title": "Como acompanhar o domingo no F1 Status",
+      "description": "Roteiro prático: calendário, live timing, mensagens de prova e classificação depois da bandeirada.",
+      "paragraphs": [
+        "No domingo o caminho mais simples é: conferir o horário na home, abrir o live timing alguns minutos antes da volta de formação e deixar a classificação para depois da bandeirada. A home resume se a sessão já está em andamento; o live timing é a tela cheia de ordem, mapa e race control.",
+        "Antes da largada, veja quem largou onde — a ordem do grid vem da classificação (ou da sprint, no formato da etapa). Compare com a tabela ao vivo nas primeiras voltas: quem ganhou posição na largada, quem caiu e se houve incidente no primeiro setor. Bandeira amarela cedo demais costuma aparecer primeiro nas mensagens, depois no status de pista.",
+        "No meio da prova, alterne olhar entre intervalo, pneu e mensagens. Se o líder abre dois segundos por volta, o campeonato pode estar resolvido naquela tarde; se o segundo colocado tem pneu mais novo e o intervalo cai, a tela está contando uma caçada. Pit confirmado no stint explica saltos bruscos de posição que a TV ainda está repondo no replay.",
+        "Safety car e VSC são o momento de não confiar no gap antigo. Espere o pelotão compactar, veja quem aproveitou para parar e só então volte a ler ataque. Vermelha: a sessão parou; o timing pode congelar. Não é falha do navegador se os tempos deixam de andar junto com o relógio da TV.",
+        "Depois do xadrez, dê alguns minutos antes de olhar a página de classificação do campeonato. Penalidades de cinco ou dez segundos, punição por track limits e desclassificação posterior mudam a ordem. O live timing mostra a ordem da pista; o campeonato mostra a ordem homologada quando a API recebe o resultado.",
+        "Se a sessão ainda não começou, a tela de live aponta o próximo compromisso em vez de uma tabela vazia. Se o fluxo cair no meio da prova, recarregue uma vez e confira sua rede. O site não substitui a transmissão: o áudio da direção de prova e das equipes continua na TV. O F1 Status existe para você não perder a ordem, o mapa e o motivo de uma bandeira enquanto a câmera está em outro carro."
+      ],
+      "related": [
+        { "href": "/live", "label": "Ir para o live timing" },
+        { "href": "/standings", "label": "Classificação" },
+        {
+          "href": "/guias/bandeiras-safety-car",
+          "label": "Bandeiras e safety car"
+        }
+      ]
+    }
+  ]
+}

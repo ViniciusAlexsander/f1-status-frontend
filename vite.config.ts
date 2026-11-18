@@ -1,8 +1,101 @@
+import fs from "node:fs";
+import path from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vite.dev/config/
+function geojsonModules(): Plugin {
+  return {
+    name: "geojson-modules",
+    transform(code, id) {
+      if (id.split("?")[0].endsWith(".geojson")) {
+        return { code: `export default ${code}`, map: null };
+      }
+    },
+  };
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function prerenderStaticPages(): Plugin {
+  return {
+    name: "prerender-static-pages",
+    apply: "build",
+    closeBundle() {
+      const dist = path.resolve("dist");
+      const indexPath = path.join(dist, "index.html");
+      const pagesPath = path.resolve("src/content/sitePages.json");
+
+      if (!fs.existsSync(indexPath) || !fs.existsSync(pagesPath)) {
+        return;
+      }
+
+      const index = fs.readFileSync(indexPath, "utf8");
+      const env = loadEnv("production", process.cwd(), "VITE_");
+      const siteUrl = (env.VITE_SITE_URL ?? "https://f1status.app").replace(
+        /\/$/,
+        "",
+      );
+      const payload = JSON.parse(fs.readFileSync(pagesPath, "utf8")) as {
+        pages: Array<{
+          path: string;
+          title: string;
+          description: string;
+          paragraphs: string[];
+        }>;
+      };
+
+      for (const page of payload.pages) {
+        const article = `<article><h1>${escapeHtml(page.title)}</h1>${page.paragraphs
+          .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
+          .join("")}</article>`;
+        const html = index
+          .replace(/<div id="root"><\/div>/, `<div id="root">${article}</div>`)
+          .replace(
+            /<title>[^<]*<\/title>/,
+            `<title>${escapeHtml(page.title)}</title>`,
+          )
+          .replace(
+            /<meta\s+name="description"\s+content="[^"]*"\s*\/>/,
+            `<meta name="description" content="${escapeHtml(page.description)}" />`,
+          );
+
+        const relative = page.path === "/" ? "" : page.path.replace(/^\//, "");
+        const outDir = relative ? path.join(dist, relative) : dist;
+        fs.mkdirSync(outDir, { recursive: true });
+        fs.writeFileSync(path.join(outDir, "index.html"), html);
+      }
+
+      const urlEntries = payload.pages
+        .map((page) => {
+          const loc =
+            page.path === "/" ? `${siteUrl}/` : `${siteUrl}${page.path}`;
+          return `  <url><loc>${loc}</loc></url>`;
+        })
+        .join("\n");
+
+      fs.writeFileSync(
+        path.join(dist, "sitemap.xml"),
+        `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries}\n</urlset>\n`,
+      );
+
+      const robots = `User-agent: *\nAllow: /\n\nUser-agent: Mediapartners-Google\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
+      fs.writeFileSync(path.join(dist, "robots.txt"), robots);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tsconfigPaths({ projects: ["./tsconfig.app.json"] })],
+  plugins: [
+    geojsonModules(),
+    react(),
+    tsconfigPaths({ projects: ["./tsconfig.app.json"] }),
+    prerenderStaticPages(),
+  ],
 });
