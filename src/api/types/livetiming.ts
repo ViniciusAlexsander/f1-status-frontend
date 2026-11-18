@@ -227,8 +227,9 @@ export function timingToArray(
     );
 
   driversPosition.forEach((driver) => {
+    const racingNumber = driver.RacingNumber ?? driver.id;
     driver.driverData = driversStandings.find(
-      (d) => driver.RacingNumber && d.number.toString() === driver.RacingNumber,
+      (d) => d.number.toString() === racingNumber,
     );
 
     if (driver.RacingNumber && tyres) {
