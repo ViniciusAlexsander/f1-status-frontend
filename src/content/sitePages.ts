@@ -5,7 +5,7 @@ export type SitePageRelated = {
   label: string;
 };
 
-export type SitePageKind = "intro" | "article" | "hub";
+export type SitePageKind = "article" | "hub";
 
 export type SitePage = {
   path: string;

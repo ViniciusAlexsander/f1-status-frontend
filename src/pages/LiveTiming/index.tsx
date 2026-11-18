@@ -9,14 +9,10 @@ import { useSessionLiveTimingData } from "@/hooks/useSessionLiveTimingData";
 import { useListRaces } from "@/hooks/useListRaces";
 import { useSessionResults } from "@/hooks/useSessionResults";
 import type { DriverPenalty } from "@/api/types/livetiming";
-import { PageIntro } from "@/components/content/PageIntro";
-import { getSitePage } from "@/content/sitePages";
 import { Box, Grid, Stack } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useLiveTimingPageState } from "./hooks/useLiveTimingPageState";
 import { useRaceControlNotifications } from "./hooks/useRaceControlNotifications";
-
-const liveIntro = getSitePage("/live");
 
 export default function LiveTiming() {
   const { session } = useSessionLiveTimingData();
@@ -102,13 +98,10 @@ export default function LiveTiming() {
 
   if (showNextSessionBanner && raceData) {
     return (
-      <Stack gap="4" px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
-        {liveIntro && <PageIntro page={liveIntro} />}
-        <UpcomingSessionBanner
-          nextScheduledSession={nextScheduledSession}
-          nextSessionRace={nextSessionRace}
-        />
-      </Stack>
+      <UpcomingSessionBanner
+        nextScheduledSession={nextScheduledSession}
+        nextSessionRace={nextSessionRace}
+      />
     );
   }
 
@@ -122,7 +115,6 @@ export default function LiveTiming() {
         px={{ base: 1.5, sm: 4, lg: 7, "2xl": 10 }}
         py={{ base: 1, md: 7 }}
       >
-        {liveIntro && <PageIntro page={liveIntro} />}
         <LiveTimingHeader
           sessionName={sessionName}
           sessionTypeLabel={sessionTypeLabel}

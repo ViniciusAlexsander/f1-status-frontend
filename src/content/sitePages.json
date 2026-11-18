@@ -1,36 +1,6 @@
 {
   "pages": [
     {
-      "path": "/",
-      "kind": "intro",
-      "title": "F1 Status — calendário, classificação e live timing (não oficial)",
-      "description": "Acompanhe a temporada com calendário, classificação e live timing. Site independente, sem vínculo com a Formula 1.",
-      "paragraphs": [
-        "O F1 Status reúne, em um só lugar, o calendário da temporada, a classificação de pilotos e construtores e uma tela de live timing para quem quer acompanhar o que acontece na pista sem abrir várias abas. O objetivo é explicar o fim de semana de forma direta: o que vem a seguir, quem lidera o campeonato e, quando houver sessão em andamento, como a ordem está se formando na hora.",
-        "Este site é um projeto independente. Não somos afiliados à Formula 1, à Formula One Management, à Liberty Media nem a equipes ou patrocinadores. Os dados de sessão, clima e resultados podem atrasar em relação à transmissão oficial e servem como referência para fãs, não como fonte regulamentar.",
-        "Se você está chegando agora, comece pelos guias: eles descrevem o que é cada sessão do fim de semana, como ler gaps no timing, o significado de bandeiras e safety car, e como usar o painel no domingo de corrida. A navegação no topo leva à classificação e ao live timing; o rodapé concentra páginas sobre o projeto, privacidade e contato."
-      ]
-    },
-    {
-      "path": "/standings",
-      "kind": "intro",
-      "title": "Classificação da temporada",
-      "description": "Tabela de pilotos e construtores da temporada, com contexto de como os pontos funcionam no F1 Status.",
-      "paragraphs": [
-        "A página de classificação mostra a ordem atual dos pilotos e das equipes na temporada. Os pontos acumulados mudam depois de sprints e corridas; empates são resolvidos pelos melhores resultados, como no regulamento esportivo em vigor. Use esta tela para ver quem está na luta pelo título e quem precisa pontuar no próximo fim de semana.",
-        "Os números aqui acompanham o calendário publicado no início, mas podem levar alguns minutos para refletir o resultado oficial após a bandeirada. Se uma sessão ainda está em andamento, o live timing é o lugar certo para a ordem momentânea; a classificação do campeonato só se atualiza quando o resultado entra na nossa base."
-      ]
-    },
-    {
-      "path": "/live",
-      "kind": "intro",
-      "title": "Live timing",
-      "description": "Painel de tempos ao vivo, mapa e mensagens de direção de prova. Pode haver atraso em relação à TV.",
-      "paragraphs": [
-        "O live timing concentra a ordem dos carros, intervalos, mapa da pista e mensagens de direção de prova quando há sessão em andamento. Fora de sessão, a tela aponta o próximo compromisso do calendário. Os dados chegam de fontes de timing e podem atrasar alguns segundos em relação à transmissão oficial — não substituem a cronometragem da prova."
-      ]
-    },
-    {
       "path": "/sobre",
       "kind": "article",
       "title": "Sobre o F1 Status",

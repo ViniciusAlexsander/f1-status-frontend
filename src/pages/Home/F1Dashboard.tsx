@@ -2,10 +2,8 @@ import { Box, Container, Grid, Spinner, Stack, Text } from "@chakra-ui/react";
 import type { RaceListData } from "@/api/types/race";
 import { useListRaces } from "@/hooks/useListRaces";
 import { formatDateCompact } from "@/utils/date";
-import { PageIntro } from "@/components/content/PageIntro";
 import { SiteHeader } from "@/components/dashboard/SiteHeader";
 import { StandingsPanel } from "@/components/dashboard/StandingsPanel";
-import { getSitePage } from "@/content/sitePages";
 import {
   CalendarPanel,
   LivePanel,
@@ -13,8 +11,6 @@ import {
   NextRacePanel,
 } from "./components/HomePanels";
 import { getFocusedSession } from "./components/homeUtils";
-
-const homeIntro = getSitePage("/");
 
 export default function F1Dashboard() {
   const { data, isLoading, isError, error } = useListRaces();
@@ -25,8 +21,7 @@ export default function F1Dashboard() {
   if (isLoading) {
     return (
       <Container maxW="1600px" py="12">
-        <Stack gap="6" align="center">
-          {homeIntro && <PageIntro page={homeIntro} />}
+        <Stack align="center">
           <Spinner size="lg" />
           <Text color="fg.muted">Carregando calendário...</Text>
         </Stack>
@@ -37,12 +32,9 @@ export default function F1Dashboard() {
   if (isError || !raceData) {
     return (
       <Container maxW="1600px" py="12">
-        <Stack gap="4">
-          {homeIntro && <PageIntro page={homeIntro} />}
-          <Text color="f1.500">
-            {error?.message ?? "Não foi possível carregar os dados."}
-          </Text>
-        </Stack>
+        <Text color="f1.500">
+          {error?.message ?? "Não foi possível carregar os dados."}
+        </Text>
       </Container>
     );
   }
@@ -66,15 +58,10 @@ export default function F1Dashboard() {
         }
       />
       <Container maxW="1600px" px={{ base: 4, md: 6 }} pb="10">
-        {homeIntro && (
-          <Box pt={{ base: 4, md: 6 }} pb="4">
-            <PageIntro page={homeIntro} showAd />
-          </Box>
-        )}
         <Grid
           templateColumns={{ base: "1fr", xl: "minmax(0, 1fr) 20rem" }}
           gap="4"
-          pt={homeIntro ? 0 : { base: 4, md: 6 }}
+          pt={{ base: 4, md: 6 }}
         >
           <Stack gap="4" minW="0">
             {activeRace && (

@@ -45,13 +45,19 @@ function prerenderStaticPages(): Plugin {
       const payload = JSON.parse(fs.readFileSync(pagesPath, "utf8")) as {
         pages: Array<{
           path: string;
+          kind?: string;
           title: string;
           description: string;
           paragraphs: string[];
         }>;
       };
 
-      for (const page of payload.pages) {
+      const appPaths = ["/", "/standings", "/live"];
+      const contentPages = payload.pages.filter(
+        (page) => page.kind !== "intro",
+      );
+
+      for (const page of contentPages) {
         const article = `<article><h1>${escapeHtml(page.title)}</h1>${page.paragraphs
           .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
           .join("")}</article>`;
@@ -72,10 +78,14 @@ function prerenderStaticPages(): Plugin {
         fs.writeFileSync(path.join(outDir, "index.html"), html);
       }
 
-      const urlEntries = payload.pages
-        .map((page) => {
+      const sitemapPaths = [
+        ...appPaths,
+        ...contentPages.map((page) => page.path),
+      ];
+      const urlEntries = [...new Set(sitemapPaths)]
+        .map((pagePath) => {
           const loc =
-            page.path === "/" ? `${siteUrl}/` : `${siteUrl}${page.path}`;
+            pagePath === "/" ? `${siteUrl}/` : `${siteUrl}${pagePath}`;
           return `  <url><loc>${loc}</loc></url>`;
         })
         .join("\n");
