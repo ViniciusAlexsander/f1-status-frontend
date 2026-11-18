@@ -1,4 +1,5 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
+import { createElement } from "react";
 import { RiDropLine, RiWindyLine } from "react-icons/ri";
 import type { WeatherSnapshot } from "@/utils/weather";
 import {
@@ -15,8 +16,10 @@ type WeatherSummaryProps = {
   compact?: boolean;
 };
 
-export function WeatherSummary({ weather, compact = false }: WeatherSummaryProps) {
-  const WeatherIcon = getWeatherIcon(weather.weather_code);
+export function WeatherSummary({
+  weather,
+  compact = false,
+}: WeatherSummaryProps) {
   const iconColor = getWeatherIconColor(weather.weather_code);
   const iconSize = compact ? "16px" : "18px";
   const metaIconSize = compact ? "13px" : "14px";
@@ -33,19 +36,36 @@ export function WeatherSummary({ weather, compact = false }: WeatherSummaryProps
       fontVariantNumeric="tabular-nums"
     >
       <Flex align="center" gap="1.5" minW="0">
-        <Box fontSize={iconSize} lineHeight="1" flexShrink={0} aria-hidden="true">
-          <WeatherIcon color={iconColor} />
+        <Box
+          fontSize={iconSize}
+          lineHeight="1"
+          flexShrink={0}
+          aria-hidden="true"
+        >
+          {createElement(getWeatherIcon(weather.weather_code), {
+            color: iconColor,
+          })}
         </Box>
         <Text fontWeight="600">{formatWeatherTemps(weather)}</Text>
       </Flex>
       <Flex align="center" gap="1">
-        <Box fontSize={metaIconSize} lineHeight="1" flexShrink={0} aria-hidden="true">
+        <Box
+          fontSize={metaIconSize}
+          lineHeight="1"
+          flexShrink={0}
+          aria-hidden="true"
+        >
           <RiDropLine color="#3B82F6" />
         </Box>
         <Text color="fg">{formatWeatherPrecip(weather)}</Text>
       </Flex>
       <Flex align="center" gap="1" minW="0">
-        <Box fontSize={metaIconSize} lineHeight="1" flexShrink={0} aria-hidden="true">
+        <Box
+          fontSize={metaIconSize}
+          lineHeight="1"
+          flexShrink={0}
+          aria-hidden="true"
+        >
           <RiWindyLine color="#94A3B8" />
         </Box>
         <Text color="fg" truncate>
@@ -62,7 +82,6 @@ type ForecastDayRowProps = {
 };
 
 export function ForecastDayRow({ date, weather }: ForecastDayRowProps) {
-  const WeatherIcon = getWeatherIcon(weather.weather_code);
   const iconColor = getWeatherIconColor(weather.weather_code);
 
   return (
@@ -90,7 +109,9 @@ export function ForecastDayRow({ date, weather }: ForecastDayRowProps) {
           {formatForecastDayLabel(date)}
         </Text>
         <Box fontSize="18px" lineHeight="1" flexShrink={0} aria-hidden="true">
-          <WeatherIcon color={iconColor} />
+          {createElement(getWeatherIcon(weather.weather_code), {
+            color: iconColor,
+          })}
         </Box>
         <Text fontSize="sm" fontWeight="600">
           {formatWeatherTemps(weather)}

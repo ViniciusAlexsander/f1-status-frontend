@@ -82,7 +82,8 @@ export default function LiveTopicsDev() {
       const latest = historyResponse.data;
       setEvents((current) => {
         const byId = new Map<string, TopicEvent>();
-        for (const event of [...latest.events, ...current]) byId.set(event.id, event);
+        for (const event of [...latest.events, ...current])
+          byId.set(event.id, event);
         return [...byId.values()].sort((a, b) => b.id.localeCompare(a.id));
       });
       setTotal(latest.total);
@@ -90,7 +91,11 @@ export default function LiveTopicsDev() {
       setError(undefined);
     } catch (cause) {
       if (selectedTopicRef.current === selectedTopic) {
-        setError(cause instanceof Error ? cause.message : "Falha ao consultar o histórico.");
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "Falha ao consultar o histórico.",
+        );
       }
     } finally {
       if (selectedTopicRef.current === selectedTopic) setLoading(false);
@@ -126,7 +131,11 @@ export default function LiveTopicsDev() {
       setTotal(older.total);
     } catch (cause) {
       if (selectedTopicRef.current === selectedTopic) {
-        setError(cause instanceof Error ? cause.message : "Falha ao carregar eventos anteriores.");
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "Falha ao carregar eventos anteriores.",
+        );
       }
     } finally {
       if (selectedTopicRef.current === selectedTopic) setLoadingOlder(false);
@@ -146,15 +155,27 @@ export default function LiveTopicsDev() {
           >
             Ferramentas de desenvolvimento
           </Text>
-          <Flex align={{ base: "flex-start", md: "center" }} justify="space-between" gap="4" wrap="wrap">
+          <Flex
+            align={{ base: "flex-start", md: "center" }}
+            justify="space-between"
+            gap="4"
+            wrap="wrap"
+          >
             <Box>
-              <Heading size={{ base: "xl", md: "2xl" }}>Live topic inspector</Heading>
+              <Heading size={{ base: "xl", md: "2xl" }}>
+                Live topic inspector
+              </Heading>
               <Text mt="2" color="fg.muted">
-                O backend escuta e registra os eventos continuamente, mesmo quando esta página está fechada.
+                O backend escuta e registra os eventos continuamente, mesmo
+                quando esta página está fechada.
               </Text>
             </Box>
             <Badge colorPalette={connected ? "green" : "yellow"}>
-              {connected === undefined ? "Verificando coletor" : connected ? "Coletor conectado" : "Coletor reconectando"}
+              {connected === undefined
+                ? "Verificando coletor"
+                : connected
+                  ? "Coletor conectado"
+                  : "Coletor reconectando"}
             </Badge>
           </Flex>
         </Stack>
@@ -218,33 +239,51 @@ export default function LiveTopicsDev() {
             borderColor="border"
           >
             <Box>
-              <Text fontFamily="mono" fontWeight="600">{selectedTopic}</Text>
+              <Text fontFamily="mono" fontWeight="600">
+                {selectedTopic}
+              </Text>
               <Text color="fg.muted" fontSize="xs" fontFamily="mono">
                 Histórico bruto · atualiza a cada 3 segundos
               </Text>
             </Box>
             <Text color="fg.muted" fontSize="xs" fontFamily="mono">
-              Exibindo {events.length.toLocaleString()} de {total.toLocaleString()} eventos
+              Exibindo {events.length.toLocaleString()} de{" "}
+              {total.toLocaleString()} eventos
             </Text>
           </Flex>
 
           {events.length < total && events.length > 0 && (
             <Box px="4" py="3" borderBottomWidth="1px" borderColor="border">
-              <Button size="sm" variant="outline" onClick={() => void loadOlder()} loading={loadingOlder}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => void loadOlder()}
+                loading={loadingOlder}
+              >
                 Carregar eventos anteriores
               </Button>
             </Box>
           )}
 
           {loading && events.length === 0 ? (
-            <Text p="5" color="fg.muted">Carregando histórico...</Text>
+            <Text p="5" color="fg.muted">
+              Carregando histórico...
+            </Text>
           ) : events.length === 0 ? (
-            <Text p="5" color="fg.muted">Nenhum evento registrado para este tópico ainda.</Text>
+            <Text p="5" color="fg.muted">
+              Nenhum evento registrado para este tópico ainda.
+            </Text>
           ) : (
             <Stack gap="0" divideY="1px" divideColor="border">
               {events.map((event) => (
                 <Box key={event.id} p={{ base: 4, md: 5 }}>
-                  <Flex align="center" justify="space-between" gap="3" wrap="wrap" mb="3">
+                  <Flex
+                    align="center"
+                    justify="space-between"
+                    gap="3"
+                    wrap="wrap"
+                    mb="3"
+                  >
                     <Text fontFamily="mono" fontSize="xs" color="fg.muted">
                       {new Date(event.receivedAt).toLocaleString()}
                     </Text>

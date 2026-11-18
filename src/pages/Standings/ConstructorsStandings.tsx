@@ -1,5 +1,13 @@
 import { useConstructorsStandings } from "@/hooks/useConstructorsStandings";
-import { Alert, Box, Flex, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  Box,
+  Flex,
+  Heading,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { StandingTeamLogo } from "@/components/dashboard/StandingsPanel";
 
 export default function ConstructorsStandings() {
@@ -29,11 +37,28 @@ export default function ConstructorsStandings() {
 
   return (
     <Box borderWidth="1px" borderColor="border" bg="card">
-      <Flex align="center" justify="space-between" borderBottomWidth="1px" borderColor="border" px="4" py="2.5">
-        <Heading fontFamily="mono" fontSize="11px" letterSpacing="0.14em" textTransform="uppercase">
+      <Flex
+        align="center"
+        justify="space-between"
+        borderBottomWidth="1px"
+        borderColor="border"
+        px="4"
+        py="2.5"
+      >
+        <Heading
+          fontFamily="mono"
+          fontSize="11px"
+          letterSpacing="0.14em"
+          textTransform="uppercase"
+        >
           Equipes
         </Heading>
-        <Text fontFamily="mono" fontSize="10px" color="fg.muted" textTransform="uppercase">
+        <Text
+          fontFamily="mono"
+          fontSize="10px"
+          color="fg.muted"
+          textTransform="uppercase"
+        >
           {constructorsStandings?.length ?? 0} equipes
         </Text>
       </Flex>
@@ -51,12 +76,27 @@ export default function ConstructorsStandings() {
                 opacity="0.14"
               />
               <Flex position="relative" align="center" gap="3">
-                <Text w="4" flexShrink="0" fontFamily="mono" fontSize="xs" color="fg.muted" fontVariantNumeric="tabular-nums">
+                <Text
+                  w="4"
+                  flexShrink="0"
+                  fontFamily="mono"
+                  fontSize="xs"
+                  color="fg.muted"
+                  fontVariantNumeric="tabular-nums"
+                >
                   {constructor.position || index + 1}
                 </Text>
                 <StandingTeamLogo teamName={constructor.name} />
-                <Text minW="0" flex="1" truncate fontSize="13px">{constructor.name}</Text>
-                <Text w="10" textAlign="right" fontFamily="mono" fontSize="13px" fontVariantNumeric="tabular-nums">
+                <Text minW="0" flex="1" truncate fontSize="13px">
+                  {constructor.name}
+                </Text>
+                <Text
+                  w="10"
+                  textAlign="right"
+                  fontFamily="mono"
+                  fontSize="13px"
+                  fontVariantNumeric="tabular-nums"
+                >
                   {constructor.points}
                 </Text>
               </Flex>

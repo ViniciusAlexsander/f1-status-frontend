@@ -1,14 +1,8 @@
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { NAV_ITEMS } from "@/config/navigation";
+import { MobileNavDrawer } from "@/components/navigation/MobileNavDrawer";
+import { Box, Container, Flex, HStack, Link, Text } from "@chakra-ui/react";
 import { RiFlagLine, RiRadioLine } from "react-icons/ri";
 import { Link as RouterLink, NavLink } from "react-router-dom";
-import { MobileNavDrawer } from "@/components/navigation/MobileNavDrawer";
 
 type SiteHeaderProps = {
   isLive: boolean;
@@ -69,14 +63,11 @@ export function SiteHeader({
           </Link>
 
           <HStack display={{ base: "none", md: "flex" }} ml="auto" gap="1">
-            {[
-              ["Classificação", "/standings"],
-              ["Live timing", "/live"],
-            ].map(([label, href]) => (
+            {NAV_ITEMS.filter((item) => item.path !== "/").map((item) => (
               <NavLink
-                key={href}
-                to={href}
-                end={href === "/"}
+                key={item.path}
+                to={item.path}
+                end={item.end}
                 style={({ isActive }) => ({
                   textDecoration: "none",
                   color: isActive
@@ -96,7 +87,7 @@ export function SiteHeader({
                   letterSpacing="0.12em"
                   textTransform="uppercase"
                 >
-                  {label}
+                  {item.label}
                 </Box>
               </NavLink>
             ))}
@@ -122,7 +113,6 @@ export function SiteHeader({
             <Box display={{ base: "block", md: "none" }}>
               <MobileNavDrawer />
             </Box>
-
           </HStack>
         </Flex>
       </Container>
@@ -147,7 +137,6 @@ export function SiteHeader({
           </Text>
           <Text truncate>{compactStatusLabel ?? statusLabel}</Text>
         </Flex>
-
       </Box>
     </Box>
   );

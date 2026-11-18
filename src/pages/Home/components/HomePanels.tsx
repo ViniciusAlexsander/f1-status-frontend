@@ -13,7 +13,11 @@ import { Link as RouterLink } from "react-router-dom";
 import { RiArrowRightLine, RiCalendarLine, RiRadioLine } from "react-icons/ri";
 import type { RaceWeek, Schedule } from "@/api/types/race";
 import { useSessionResults } from "@/hooks/useSessionResults";
-import { formatDateTime, formatDateWithoutTime, formatSessionStartTime } from "@/utils/date";
+import {
+  formatDateTime,
+  formatDateWithoutTime,
+  formatSessionStartTime,
+} from "@/utils/date";
 import { getEventStatusPalette } from "@/utils/eventStatus";
 import { ForecastDayRow, WeatherSummary } from "./WeatherSummary";
 import { getNextScheduledSession } from "./homeUtils";
@@ -287,13 +291,7 @@ function EventWeatherStrip({ race }: { race: RaceWeek }) {
   if (!race.forecast?.days.length) return null;
 
   return (
-    <Box
-      borderTopWidth="1px"
-      borderColor="border"
-      pt="4"
-      mt="1"
-      w="full"
-    >
+    <Box borderTopWidth="1px" borderColor="border" pt="4" mt="1" w="full">
       <Flex align="baseline" justify="space-between" gap="3" mb="1">
         <Text
           fontFamily="mono"
@@ -308,7 +306,11 @@ function EventWeatherStrip({ race }: { race: RaceWeek }) {
       </Flex>
       <Box>
         {race.forecast.days.map((day) => (
-          <ForecastDayRow key={day.date} date={day.date} weather={day.weather} />
+          <ForecastDayRow
+            key={day.date}
+            date={day.date}
+            weather={day.weather}
+          />
         ))}
       </Box>
     </Box>

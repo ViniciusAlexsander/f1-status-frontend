@@ -1,9 +1,6 @@
 import type { DriverTimingItem } from "@/api/types/livetiming";
 import { Badge, Box, Text } from "@chakra-ui/react";
-import {
-  DriverStatus,
-  getDriverStatus,
-} from "@/api/liveTimingFeatures";
+import { DriverStatus, getDriverStatus } from "@/api/liveTimingFeatures";
 
 export function PitStopsDisplay({ driver }: { driver: DriverTimingItem }) {
   const status = getDriverStatus(driver);

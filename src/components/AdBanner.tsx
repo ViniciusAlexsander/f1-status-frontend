@@ -29,10 +29,10 @@ export function AdBanner({
   if (!adSlot) return null;
 
   return (
-    <Box w="full" overflow="hidden" textAlign="center">
+    <Box w="full" overflow="hidden" textAlign="center" minH="90px">
       <ins
         className="adsbygoogle"
-        style={{ display: "block" }}
+        style={{ display: "block", minHeight: "90px" }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={adSlot}
         data-ad-format={format}

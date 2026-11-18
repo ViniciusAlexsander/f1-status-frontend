@@ -11,10 +11,8 @@ function scaleFor(circuit: CircuitDefinition) {
   const innerW = TRACK_VIEWBOX.width - TRACK_VIEWBOX.padding * 2;
   const innerH = TRACK_VIEWBOX.height - TRACK_VIEWBOX.padding * 2;
   const scale = Math.min(innerW / dx, innerH / dy);
-  const offsetX =
-    (TRACK_VIEWBOX.width - dx * scale) / 2;
-  const offsetY =
-    (TRACK_VIEWBOX.height - dy * scale) / 2;
+  const offsetX = (TRACK_VIEWBOX.width - dx * scale) / 2;
+  const offsetY = (TRACK_VIEWBOX.height - dy * scale) / 2;
   return { scale, offsetX, offsetY, minLon, maxLat };
 }
 

@@ -15,9 +15,7 @@ export function useTyreStintSeriesLiveTimingData() {
       const update: TyreStintSeriesPayload = JSON.parse(event.data);
       if (!update.Stints) return;
       setStints((current) =>
-        update._kf
-          ? update.Stints ?? {}
-          : { ...current, ...update.Stints },
+        update._kf ? (update.Stints ?? {}) : { ...current, ...update.Stints },
       );
     };
 
