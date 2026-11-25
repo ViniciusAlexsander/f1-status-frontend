@@ -56,7 +56,7 @@ export interface CurrentTyresPayload {
 }
 
 export interface CurrentTyrePayload {
-  Compound: string;
+  Compound?: string;
   New?: boolean | string;
 }
 
@@ -244,6 +244,19 @@ export function timingToArray(
       const stintLaps = Number(driver.currentStint?.TotalLaps);
       if (Number.isFinite(stintLaps)) driver.currentStintLaps = stintLaps;
     }
+
+    const currentLabel = driver.currentTyre?.Compound.label;
+    if (
+      !isKnownTyreCompound(currentLabel) &&
+      isKnownTyreCompound(driver.currentStint?.Compound)
+    ) {
+      driver.currentTyre = normalizeTyreInfo({
+        Compound: driver.currentStint?.Compound,
+        New: driver.currentStint?.New,
+      });
+    } else if (!isKnownTyreCompound(currentLabel)) {
+      driver.currentTyre = undefined;
+    }
   });
 
   const validBestLaps = driversPosition
@@ -293,8 +306,13 @@ const TYRE_COMPOUNDS: Record<string, TyreCompound> = {
   wet: { label: "WET", abbreviation: "W", color: "#0067FF" },
 };
 
+export function isKnownTyreCompound(value?: string): boolean {
+  const compound = value?.trim().toLowerCase();
+  return Boolean(compound && TYRE_COMPOUNDS[compound]);
+}
+
 export function normalizeTyreInfo(tyre: CurrentTyrePayload): TyreInfo {
-  const compound = tyre.Compound.trim().toLowerCase();
+  const compound = tyre.Compound?.trim().toLowerCase() ?? "";
 
   return {
     New: tyre.New === true || tyre.New === "true",

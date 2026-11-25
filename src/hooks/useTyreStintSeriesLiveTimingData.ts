@@ -14,9 +14,19 @@ export function useTyreStintSeriesLiveTimingData() {
     const handleUpdate = (event: MessageEvent<string>) => {
       const update: TyreStintSeriesPayload = JSON.parse(event.data);
       if (!update.Stints) return;
-      setStints((current) =>
-        update._kf ? (update.Stints ?? {}) : { ...current, ...update.Stints },
-      );
+      setStints((current) => {
+        if (update._kf) return update.Stints ?? {};
+
+        const next = { ...current };
+        for (const [number, driverStints] of Object.entries(update.Stints ?? {})) {
+          const merged: Record<string, TyreStint> = { ...current[number] };
+          for (const [index, stint] of Object.entries(driverStints)) {
+            merged[index] = { ...current[number]?.[index], ...stint };
+          }
+          next[number] = merged;
+        }
+        return next;
+      });
     };
 
     eventSource.addEventListener("topic_update", handleUpdate as EventListener);

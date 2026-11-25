@@ -1,4 +1,7 @@
-import type { DriverTimingItem } from "@/api/types/livetiming";
+import {
+  isKnownTyreCompound,
+  type DriverTimingItem,
+} from "@/api/types/livetiming";
 import { Box, Text } from "@chakra-ui/react";
 import softTyre from "@/assets/soft.svg";
 import mediumTyre from "@/assets/medium.svg";
@@ -11,7 +14,9 @@ const TYRE_IMAGES: Record<string, string> = {
 };
 
 export function TyreStintDisplay({ driver }: { driver: DriverTimingItem }) {
-  const tyre = driver.currentTyre?.Compound;
+  const tyre = isKnownTyreCompound(driver.currentTyre?.Compound.label)
+    ? driver.currentTyre?.Compound
+    : undefined;
   const tyreImage = tyre ? TYRE_IMAGES[tyre.label.toLowerCase()] : undefined;
 
   return (
